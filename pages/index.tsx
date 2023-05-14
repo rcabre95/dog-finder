@@ -2,17 +2,20 @@ import Image from 'next/image'
 import { useForm } from 'react-hook-form'
 import { Inter } from 'next/font/google'
 import FetchSVG from '@/components/FetchSVG'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Login from '@/lib/auth/login'
 import Logout from '@/lib/auth/logout'
+import { SDK } from '@/lib/fetch_sdk'
+import { useRouter } from 'next/router'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  const router = useRouter();
 
   const { register, handleSubmit, formState: { errors } } = useForm();
 
-  const [loading, setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false);
 
   return (
     <main
@@ -26,8 +29,14 @@ export default function Home() {
         <form className={`flex flex-col items-center`}
           onSubmit={handleSubmit(async (data) => {
             setLoading(true);
-            Login(data);
+            // Login(data);
+            let status = await SDK.login(data.name, data.email)
             setLoading(false);
+            if (status === 200) {
+              router.push('/dogs');
+              // let breeds = await SDK.getBreeds();
+              // console.log(breeds);
+            } else { alert("Something went wrong with our servers...")}
           })}
         >
           <div className={`w-1/3 flex bg-green-300`}>
