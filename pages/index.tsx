@@ -75,7 +75,6 @@ export default function Home() {
           
           <button type="submit">{loading ? "Please wait..." : "Log in"}</button>
         </form>
-        <button onClick={Logout}>Log out</button>
       </div>
     </main>
   )
