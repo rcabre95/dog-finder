@@ -52,31 +52,12 @@ export class FetchSDK {
 
     public async getBreeds(): Promise<Array<string>> {
         try {
-            const breeds: Array<string> = (await this.axiosInstance.get(`/dogs/breeds`, {
-                withCredentials: true
-            })).data;
+            const breeds: Array<string> = (await this.axiosInstance.get(`/dogs/breeds`)).data;
             DEBUG_PRINT("LOW", breeds)
             return breeds
         } catch(err) {
             console.log(err)
             throw err
-        }
-    }
-
-    public async doInitialDogSearch(
-        breeds?: Array<string>,
-        zipCodes?: Array<number | string>,
-        ageMin?: number,
-        ageMax?: number): Promise<Array<string>> 
-    {
-
-        try {
-            const dogIds: Array<string> = await this.axiosInstance.get(`/dogs/search?`, {
-                withCredentials: true
-            })
-            return dogIds
-        } catch (err) {
-            throw new Error("Error in funcion: getDogIds:\n", { cause: err })
         }
     }
 
@@ -101,11 +82,6 @@ export class FetchSDK {
         ageMin: number = 0,
         ageMax: number = Number.MAX_VALUE): Promise<Array<string>>
     {
-        // console.log(breeds);
-        // console.log(zipCodes);
-        // console.log(ageMin);
-        // console.log(ageMax);
-
         try {
             const dogIds: Array<string> = (await this.axiosInstance.get(`/dogs/search`)).data.resultIds
             // console.log(dogIds)
@@ -127,9 +103,11 @@ export class FetchSDK {
         }
     }
 
-    // public async dogMatch(favorites: Array<string>): Promise<Dog> {
-
-    // }
+    public async dogMatch(favorites: Array<string>): Promise<string> {
+        const match: string = (await this.axiosInstance.post(`/dogs/match`, favorites)).data.match;
+        console.log(match);
+        return match
+    }
 }
 
 export const SDK = new FetchSDK(process.env.NEXT_PUBLIC_FETCH_URL!);

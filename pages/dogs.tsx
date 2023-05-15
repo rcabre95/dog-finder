@@ -40,12 +40,17 @@ export default function Dogs() {
     const nextPage = async () => {
 
     }
+
+    const confirmFilters = async () => {
+
+    }
     
     useEffect(() => {
         // var initZipCodes: string[] = ["60630"]
         SDK.getBreeds().then((d) => {
             setBreeds(d);
         });
+
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(async (position) => {
                 const coords: MapPoint = {
@@ -62,34 +67,7 @@ export default function Dogs() {
                     
                 })
             })
-        } 
-        console.log(dogs)
-        // navigator.geolocation.getCurrentPosition(
-        //     async function(position){
-        //         // console.log(position.coords)
-        //         const coords: MapPoint = {
-        //             lat: position.coords.latitude,
-        //             lon: position.coords.longitude
-        //         }
-                
-        //         // console.log(coordinates)
-        //         console.log(Geo.getBoundingBox(coords, 10))
-        //         const { minPoint, maxPoint } = Geo.getBoundingBox(coords, 20);
-        //         SDK.getZipcodes(minPoint, maxPoint).then((d) => {
-        //             initZipCodes
-        //         })
-        //     },
-        //     function(error) {
-        //         if (error.code !== 0) {
-        //             setLocationAvailable(false)
-        //         }
-        //     }
-        // );
-
-        //         SDK.getDogs(breeds, initZipCodes).then((d) => {
-        //             setDogs(d)
-        //         })
-
+        }
     }, [])
 
     return (
