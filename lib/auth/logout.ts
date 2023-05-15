@@ -1,10 +1,5 @@
 import axios from "axios";
 
-interface ILoginData {
-    name: string;
-    email: string
-}
-
 export default async function Logout() {
     let test = await axios({
         method: 'POST',

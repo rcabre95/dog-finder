@@ -1,20 +1,29 @@
 import axios, { AxiosInstance } from "axios"
 import DEBUG_PRINT from "./utils/debug"
+import { MapPoint } from "./utils/distance"
 
 export interface Dog {
-    id: string
-    img: string
-    name: string
-    age: number
-    zip_code: string
-    breed: string
+    id: string;
+    img: string;
+    name: string;
+    age: number;
+    zip_code: string;
+    breed: string;
+}
+
+export interface Location {
+    zip_code: string;
+    latitude: number;
+    longitude: number;
+    city: string;
+    state: string;
+    county: string;
 }
 
 axios.defaults.withCredentials = true
 
 export class FetchSDK {
     private axiosInstance: AxiosInstance;
-    public temp: number = 0;
 
     constructor(private url: string) {
         this.axiosInstance = axios.create({
@@ -24,36 +33,28 @@ export class FetchSDK {
 
     public async login(name: string, email: string): Promise<number> {
         DEBUG_PRINT("HIGH", "Beginning Login endpoint...");
-        this.temp++
-        console.log(this.temp);
         const success = await this.axiosInstance.post(`/auth/login`, { name, email });
-        // let success = await fetch(`${process.env.NEXT_PUBLIC_FETCH_URL}/auth/login`, {
-        //     method: 'POST',
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify({ name, email })
-        // })
-        console.log(success)
 
         DEBUG_PRINT("HIGH", `Completing login request\nStatus: ${success.status}`);
-        // console.log(success.status)
         return success.status;
     }
 
-    public async logout(): Promise<void> {
+    public async logout(): Promise<any> {
         DEBUG_PRINT("HIGH", "Beginning Login endpoint...");
-
+        try {
+            const success = await this.axiosInstance.post(`/auth/logout`)
+            return success.status
+        } catch(err) {
+            console.log(err);
+            throw err
+        }
     }
 
     public async getBreeds(): Promise<Array<string>> {
         try {
-            this.temp++
-            console.log(this.temp)
             const breeds: Array<string> = (await this.axiosInstance.get(`/dogs/breeds`, {
                 withCredentials: true
             })).data;
-            console.log(breeds)
             DEBUG_PRINT("LOW", breeds)
             return breeds
         } catch(err) {
@@ -62,7 +63,7 @@ export class FetchSDK {
         }
     }
 
-    public async doDogSearch(
+    public async doInitialDogSearch(
         breeds?: Array<string>,
         zipCodes?: Array<number | string>,
         ageMin?: number,
@@ -70,7 +71,7 @@ export class FetchSDK {
     {
 
         try {
-            const dogIds: Array<string> = await this.axiosInstance.get(`/dogs/search`, {
+            const dogIds: Array<string> = await this.axiosInstance.get(`/dogs/search?`, {
                 withCredentials: true
             })
             return dogIds
@@ -79,9 +80,52 @@ export class FetchSDK {
         }
     }
 
-    // public async getDogs(ids: Array<string>): Promise<Array<Dog>> {
+    public async getZipcodes(bottomLeft: MapPoint, topRight: MapPoint) {
+        // console.log([bottomLeft, topRight]);
+        const locations: Array<string> = (await this.axiosInstance.post(`/locations/search`,
+        {
+            geoBoundingBox: {
+                bottom_left: bottomLeft,
+                top_right: topRight
+        }}))
+        .data.results.map((location: Location) => {
+            return location.zip_code
+        });
+        // console.log(locations)
+        return locations
+    }
 
-    // }
+    public async getDogIds(
+        breeds?: Array<string>,
+        zipCodes?: Array<number | string>,
+        ageMin: number = 0,
+        ageMax: number = Number.MAX_VALUE): Promise<Array<string>>
+    {
+        // console.log(breeds);
+        // console.log(zipCodes);
+        // console.log(ageMin);
+        // console.log(ageMax);
+
+        try {
+            const dogIds: Array<string> = (await this.axiosInstance.get(`/dogs/search`)).data.resultIds
+            // console.log(dogIds)
+            return dogIds
+        } catch (err) {
+            throw new Error("Error in function: getDogIds:\n", { cause: err })
+        }
+    }
+
+    public async getDogs(breeds: Array<string>, zipCodes: Array<string>, ageMin?: number, ageMax?: number): Promise<any> {
+        const ids: Array<string> = await this.getDogIds(breeds, zipCodes, ageMin, ageMax);
+        console.log(ids)
+        try {
+            const dogs = (await this.axiosInstance.post(`/dogs`,  ids )).data
+            console.log(dogs)
+            return dogs
+        } catch(err) {
+            throw err
+        }
+    }
 
     // public async dogMatch(favorites: Array<string>): Promise<Dog> {
 
