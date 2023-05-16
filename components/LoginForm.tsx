@@ -2,16 +2,20 @@ import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { SDK } from '@/lib/fetch_sdk'
+import Loader from './shared-ui/Loader'
 
 
 export default function LoginForm() {
 
-    const [loading, setLoading] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false);
     const router = useRouter();
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     return (
-        <form className={`flex flex-col items-center`}
+
+    <section className={`bg-green-300 w-full h-fit flex flex-col items-center justify-center`}>
+        <h3 className={`text-4xl mb-8`}>Login</h3>
+        <form className={`flex flex-col w-fit items-center`}
             onSubmit={handleSubmit(async (data) => {
             setLoading(true);
             // Login(data);
@@ -24,7 +28,7 @@ export default function LoginForm() {
             } else { alert("Something went wrong with our servers...")}
             })}
         >
-            <div className={`w-1/3 flex bg-green-300`}>
+            <div className={`w-full flex bg-green-300`}>
                 <label className={`flex`} htmlFor="name">Name:</label>
                 <input id='name' className={`w-5/6 flex ml-2 mb-2`}
                     {...register("name",
@@ -41,7 +45,7 @@ export default function LoginForm() {
                 />
             </div>
 
-            <div className={`w-1/3 flex bg-green-300 justify-end`}>
+            <div className={`w-full flex bg-green-300 justify-end`}>
                 <label className={`flex`} htmlFor="email">Email:</label>
                 <input id="email" className={`w-5/6 flex ml-2 mb-2`}
                     {...register("email",
@@ -58,7 +62,8 @@ export default function LoginForm() {
                 />
             </div>
 
-            <button type="submit">{loading ? "Please wait..." : "Log in"}</button>
+            <button className={`h-10 w-fit px-2 bg-blue-300 rounded-sm border border-black`} type="submit">{loading ? <Loader /> : "Submit"}</button>
         </form>
+    </section>
     )
 }

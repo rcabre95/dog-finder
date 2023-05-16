@@ -32,7 +32,7 @@ export default function Dogs() {
     }
 
     const nextPage = async () => {
-
+        
     }
 
     const confirmFilters = async () => {
@@ -80,3 +80,4 @@ export function Filter() {
         </div>
     )
 }
+
