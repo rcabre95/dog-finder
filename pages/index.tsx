@@ -1,81 +1,73 @@
-import Image from 'next/image'
-import { useForm } from 'react-hook-form'
 import { Inter } from 'next/font/google'
 import FetchSVG from '@/components/FetchSVG'
-import { useState, useEffect } from 'react'
-import Login from '@/lib/auth/login'
-import Logout from '@/lib/auth/logout'
-import { SDK } from '@/lib/fetch_sdk'
-import { useRouter } from 'next/router'
+import LoginForm from '@/components/LoginForm'
+import Footer from '@/components/shared-ui/Footer'
+import Image from 'next/image'
+import { useRef, forwardRef, ForwardedRef } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  const router = useRouter();
 
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const stepsRef: ForwardedRef<HTMLElement> = useRef<HTMLElement>(null);
 
-  const [loading, setLoading] = useState<boolean>(false);
+  const scrollToSteps = () => {
+    stepsRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
 
   return (
-    <main
-      className={`h-screen w-screen flex flex-col items-center bg-slate-200 ${inter.className}`}
-    >
-      <div className={``}>
-        <h1 className={`text-center text-6xl font-medium`}>Furry Friend Finder</h1>
-        <p className={`flex justify-center items-center text-lg bg-green-400`}>powered by <span className={`h-5 w-10 ml-2 -mt-4`}><FetchSVG /></span></p>
-      </div>
-      <div className='w-4/6 h-full bg-blue-300'>
-        <form className={`flex flex-col items-center`}
-          onSubmit={handleSubmit(async (data) => {
-            setLoading(true);
-            // Login(data);
-            let status = await SDK.login(data.name, data.email)
-            setLoading(false);
-            if (status === 200) {
-              router.push('/dogs');
-              // let breeds = await SDK.getBreeds();
-              // console.log(breeds);
-            } else { alert("Something went wrong with our servers...")}
-          })}
-        >
-          <div className={`w-1/3 flex bg-green-300`}>
-            <label className={`flex`} htmlFor="name">Name:</label>
-            <input id='name' className={`w-5/6 flex ml-2 mb-2`}
-              {...register("name",
-                {
-                  required: "You must enter a name.",
-                  minLength: {
-                    value: 3,
-                    message: "Your name must be at least 3 characters long. Please use your last name if needed."
-                  }
-                }
-              )}
-              type="text"
-              placeholder='Enter your name...'
-            />
-          </div>
-
-          <div className={`w-1/3 flex bg-green-300 justify-end`}>
-            <label className={`flex`} htmlFor="email">Email:</label>
-            <input id="email" className={`w-5/6 flex ml-2 mb-2`}
-              {...register("email",
-                {
-                  required: "You must enter your email.",
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Please enter a valid email address."
-                  }
-                }
-              )}
-              type="text"
-              placeholder='Enter your email...'
-            />
-          </div>
-          
-          <button type="submit">{loading ? "Please wait..." : "Log in"}</button>
-        </form>
-      </div>
-    </main>
+    <>
+      <main
+        className={`h-fit w-screen flex flex-col items-center justify-center bg-slate-200 ${inter.className}`}>
+        <section className={`h-screen w-5/6 flex flex-col justify-center`}>
+          <p className={`text-xs md:text-sm`}>Welcome to</p>
+          <h1 className={`text-center text-4xl md:text-9xl font-light`}>Furry Friend Finder</h1>
+          <p className={`flex justify-end items-center text-xs md:text-sm bg-green-400`}>powered by <span className={``}>
+            Fetch
+            </span>
+          </p>
+          <p className={`font-bold text-sm md:text-md text-center`}>Find your furry 	&#40;canine&#41; friend in <span className={`text-blue-500`}>three</span> easy steps!</p>
+          <button onClick={scrollToSteps}>Continue</button>
+        </section>
+        <Steps ref={stepsRef} />
+      </main>
+      <Footer />
+    </>
   )
 }
+
+const Steps = forwardRef(({}, ref: ForwardedRef<HTMLElement>) =>  {
+
+  return (
+    <section ref={ref}
+    className={`h-fit py-8 w-full flex flex-col items-center`}>
+      <ol className='w-5/6'>
+        <li>
+          <h3>One</h3>
+          <p>Log in</p>
+          <div className={`h-52 w-full relative rounded-md overflow-hidden`}>
+            <Image fill src={`https://media.tenor.com/-p-p8MvwM3AAAAAC/dog-funny.gif`} alt={`dog computer funny gif`} />
+          </div>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate, reiciendis assumenda ea mollitia eos facilis sequi modi enim perferendis atque culpa non. Fuga praesentium nulla obcaecati, exercitationem aperiam illo voluptatum.</p>
+        </li>
+        <li>
+          <h3>Two</h3>
+          <p>Pick out some dogs.</p>
+          <div className={`h-52 w-full relative rounded-md overflow-hidden`}>
+            <Image fill src={`https://media.tenor.com/pIthFxQEgIEAAAAd/pick-a-cup-i-choose-you.gif`} alt={`dog choosing cup funny gif`} />
+          </div>
+          <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sunt ea architecto quos assumenda nisi cumque, neque sequi perspiciatis odit nam officia in fugiat omnis non et delectus aut optio ipsam?</p>
+        </li>
+        <li>
+          <h3>Three</h3>
+          <p>Get matched!</p>
+          <div className={`h-52 w-full relative rounded-md overflow-hidden`}>
+            <Image fill src={`https://media.tenor.com/9d_np0GQ1lgAAAAC/dog-shake-paw.gif`} alt={`dog match gif`} />
+          </div>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Id assumenda quasi amet quae maxime suscipit ex iste placeat, minus aperiam nihil! Quam totam quos rem nostrum labore porro reiciendis atque?</p>
+        </li>
+      </ol>
+    </section>
+  )
+})
+Steps.displayName = "Steps"
