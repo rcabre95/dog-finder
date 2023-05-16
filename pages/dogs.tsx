@@ -6,13 +6,7 @@ import { SDK } from "@/lib/fetch_sdk";
 import { Geo, MapPoint } from "@/lib/utils/distance";
 import LogoutBtn from "@/components/shared-ui/LogoutBtn";
 
-// export const getServerSideProps: GetServerSideProps = async () => {
-//     // await SDK.login("Bob", "Bob@bob.com");
-//     await SDK.fetchBreeds();
-//     // const dogs: Array<string> = await SDK.doDogSearch();
-//     const breeds: Array<string> = [];
-//     const dogs: Array<string> = [];
-//     console.log(SDK.temp);
+// export const getServerSideProps: GetServerSideProps = async (context) => {
 
 //     return {
 //         props: {
