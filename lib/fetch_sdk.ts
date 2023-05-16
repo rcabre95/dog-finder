@@ -80,10 +80,21 @@ export class FetchSDK {
         breeds?: Array<string>,
         zipCodes?: Array<number | string>,
         ageMin: number = 0,
-        ageMax: number = Number.MAX_VALUE): Promise<Array<string>>
+        ageMax: number = Number.MAX_VALUE,
+        direction?: string
+        ): Promise<Array<string>>
     {
+        
         try {
-            const dogIds: Array<string> = (await this.axiosInstance.get(`/dogs/search`)).data.resultIds
+            const dogIds: Array<string> = (await this.axiosInstance.get(`/dogs/search`, {
+                params: {
+                    ...(breeds ? { breeds: breeds } : {  }),
+                    ...(zipCodes ? { zipCodes: zipCodes } : {  }),
+                    ...(ageMin ? { ageMin: ageMin } : {  }),
+                    ...(ageMax ? { ageMax: ageMax } : {  }),
+                    sort: `breeds:${direction}`
+                }
+            })).data.resultIds
             // console.log(dogIds)
             return dogIds
         } catch (err) {
@@ -91,8 +102,8 @@ export class FetchSDK {
         }
     }
 
-    public async getDogs(breeds: Array<string>, zipCodes: Array<string>, ageMin?: number, ageMax?: number): Promise<any> {
-        const ids: Array<string> = await this.getDogIds(breeds, zipCodes, ageMin, ageMax);
+    public async getDogs(breeds: Array<string>, zipCodes: Array<string>, direction: string = "asc", ageMin?: number, ageMax?: number): Promise<any> {
+        const ids: Array<string> = await this.getDogIds(breeds, zipCodes, ageMin, ageMax, direction);
         console.log(ids)
         try {
             const dogs = (await this.axiosInstance.post(`/dogs`,  ids )).data
