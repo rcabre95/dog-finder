@@ -1,5 +1,6 @@
 // import { getBreeds, getDogIds, getDogs } from "@/lib/dogs"
 import { Dog } from "@/lib/dogs";
+import Header from "@/components/Header";
 import { GetServerSideProps } from "next"
 import { useState, useEffect } from "react";
 import { SDK } from "@/lib/fetch_sdk";
@@ -32,7 +33,7 @@ export default function Dogs() {
     }
 
     const nextPage = async () => {
-        
+
     }
 
     const confirmFilters = async () => {
@@ -66,9 +67,9 @@ export default function Dogs() {
 
     return (
         <div className={``}>
-            <LogoutBtn />
+            <Header showFilters={showFilters} setShowFilters={setShowFilters}></Header>
             {breeds ? <div>{JSON.stringify(breeds)}</div> : null}
-            {dogs ? <div>{JSON.stringify(dogs)}</div> : null}
+            {dogs ? <pre>{JSON.stringify(dogs, null, 4)}</pre> : null}
         </div>
     )
 }
