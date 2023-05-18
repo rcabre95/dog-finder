@@ -1,11 +1,16 @@
 // import { getBreeds, getDogIds, getDogs } from "@/lib/dogs"
+import DogCard from "@/components/shared-ui/DogCard";
 import { Dog } from "@/lib/dogs";
 import Header from "@/components/Header";
 import { GetServerSideProps } from "next"
-import { useState, useEffect } from "react";
+import { Filters } from "@/components/Filters";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { useFieldArray, useForm } from 'react-hook-form'
 import { SDK } from "@/lib/fetch_sdk";
 import { Geo, MapPoint } from "@/lib/utils/distance";
 import LogoutBtn from "@/components/shared-ui/LogoutBtn";
+import YouMustBeLoggedIn from "@/components/shared-ui/YouMustBeLoggedIn";
+import Loader from "@/components/shared-ui/Loader";
 
 // export const getServerSideProps: GetServerSideProps = async (context) => {
 
@@ -17,16 +22,29 @@ import LogoutBtn from "@/components/shared-ui/LogoutBtn";
 //     }
 // }
 
+export type AgeRange = [number, number];
+export type TSortDir = "asc" | "desc"
+
+export interface IBreed {
+    name: string,
+    selected: boolean
+}
+
 
 // export default function Dogs({ dogs, initBreeds }: { dogs: Array<Dog>, initBreeds: Array<string> }) {
 export default function Dogs() {
-
-    const [breeds, setBreeds] = useState<Array<string>>([]);
+    const [loadingDogs, setLoadingDogs] = useState<boolean>(true)
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+    const [total, setTotal] = useState<number | null>()
+    const [breeds, setBreeds] = useState<Array<IBreed>>([]);
+    const [distance, setDistance] = useState<number>(20);
+    const [sortDirection, setSortDirection] = useState<TSortDir>("asc")
     const [page, setPage] = useState<number>(1);
     const [locationAvailable, setLocationAvailable] = useState<boolean>(true);
-    const [location, setLocation] = useState<Array<number>>()
+    const [location, setLocation] = useState<MapPoint>({ lat: 41.881832, lon: -87.623177 })
     const [showFilters, setShowFilters] = useState<boolean>(false);
-    const [dogs, setDogs] = useState<Array<string>>([])
+    const [ageRange, setAgeRange] = useState<AgeRange>([0, 100])
+    const [dogs, setDogs] = useState<Array<Dog>>([]);
 
     const prevPage = async () => {
         
@@ -36,49 +54,98 @@ export default function Dogs() {
 
     }
 
-    const confirmFilters = async () => {
+    const confirmFilters = async (newBreeds: Array<IBreed>, newAgeRange: AgeRange, newDistance: number) => {
+        setLoadingDogs(true);
+        setBreeds(newBreeds);
+        setAgeRange(newAgeRange);
+        setDistance(newDistance);
 
+        const deconstructedNewBreeds: Array<string> = newBreeds.map((newBreed: IBreed) => {
+            return newBreed.name
+        })
+
+        const { minPoint, maxPoint } = Geo.getBoundingBox(location, newDistance);
+        const newZipCodes = await SDK.getZipcodes(minPoint, maxPoint);
+        const newDogs = await SDK.getDogs(deconstructedNewBreeds, newZipCodes, sortDirection, newAgeRange[0], newAgeRange[1]);
+
+        setDogs(newDogs);
+        setLoadingDogs(false);
+        setShowFilters(false);
     }
+
+    
     
     useEffect(() => {
         // var initZipCodes: string[] = ["60630"]
         SDK.getBreeds().then((d) => {
-            setBreeds(d);
+            if (d.status !== 200) {
+                setIsLoggedIn(false)
+            } else {
+                const formattedBreeds: Array<IBreed> = d.breeds.map((breed) => {
+                    return {
+                        name: breed,
+                        selected: true
+                    }
+                })
+                setBreeds(formattedBreeds);
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(async (position) => {
+                        const coords: MapPoint = {
+                            lat: position.coords.latitude,
+                            lon: position.coords.longitude
+                        }
+                        setLocation(coords);
+                        const { minPoint, maxPoint } = Geo.getBoundingBox(location, distance);
+                        // console.log([minPoint, maxPoint])
+                        console.log(breeds.length)
+                        SDK.getZipcodes(minPoint, maxPoint).then((zipCodes) => {
+                            const deconstructedBreeds: Array<string> = breeds.map((breed) => {
+                                return breed.name
+                            })
+                            SDK.getDogs(deconstructedBreeds, zipCodes, "asc", ageRange[0], ageRange[1]).then((d) => {
+                                setDogs(d.dogs)
+                                setTotal(d.total)
+                            })
+                            
+                        })
+                    })
+                }
+                
+            }
+            // change getBreeds so that it also returns status so it can be used to set isLogged in
         });
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(async (position) => {
-                const coords: MapPoint = {
-                    lat: position.coords.latitude,
-                    lon: position.coords.longitude
-                }
-                const { minPoint, maxPoint } = Geo.getBoundingBox(coords, 20);
-                // console.log([minPoint, maxPoint])
-                SDK.getZipcodes(minPoint, maxPoint).then((zipCodes) => {
-                    SDK.getDogs(breeds, zipCodes).then((d) => {
-                        // console.log(d)
-                        setDogs(d)
-                    })
-                    
-                })
-            })
-        }
+        setLoadingDogs(false)
     }, [])
 
     return (
-        <div className={``}>
+        isLoggedIn ? 
+        <div className={`w-screen h-fit`}>
             <Header showFilters={showFilters} setShowFilters={setShowFilters}></Header>
-            {breeds ? <div>{JSON.stringify(breeds)}</div> : null}
-            {dogs ? <pre>{JSON.stringify(dogs, null, 4)}</pre> : null}
+            <div className={`flex flex-wrap w-full justify-center`}>
+                {dogs.length > 0 ? dogs.map((dog: Dog) => (
+                    <DogCard
+                        key={dog.id}
+                        id={dog.id}
+                        img={dog.img}
+                        name={dog.name}
+                        age={dog.age}
+                        breed={dog.breed}
+                        zip_code={dog.zip_code}
+                    />
+                ))
+                : <Loader />}
+            </div>
+            {/* <pre>{JSON.stringify(dogs, null, 4)}</pre> */}
+            {showFilters ?
+                <Filters
+                    breeds={breeds}
+                    ageRange={ageRange}
+                    distance={distance}
+                    confirmFilters={confirmFilters}
+                /> : null
+            }
         </div>
+        : <YouMustBeLoggedIn />
     )
 }
-
-export function Filter() {
-
-    return (
-        <div>
-        </div>
-    )
-}
-
