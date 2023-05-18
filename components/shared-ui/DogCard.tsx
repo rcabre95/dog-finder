@@ -1,8 +1,7 @@
 import Image from "next/image";
 import { Dog } from "@/lib/fetch_sdk";
 
-export default function DogCard(props: Dog) {
-    const { img, name, age, breed, zip_code } = props;
+export default function DogCard({ id, img, name, age, breed, zip_code }: { id: string, img: string, name: string, age: number, breed: string, zip_code: string }) {
 
     return (
         <div className={`w-52 h-72 flex flex-col my-4 border rounded-md overflow-hidden shadow-sm`}>

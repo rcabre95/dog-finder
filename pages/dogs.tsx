@@ -113,7 +113,6 @@ export default function Dogs() {
                 }
                 
             }
-            // change getBreeds so that it also returns status so it can be used to set isLogged in
         });
 
         setLoadingDogs(false)
