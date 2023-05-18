@@ -38,7 +38,8 @@ export default function Dogs() {
     const [total, setTotal] = useState<number | null>()
     const [breeds, setBreeds] = useState<Array<IBreed>>([]);
     const [distance, setDistance] = useState<number>(20);
-    const [sortDirection, setSortDirection] = useState<TSortDir>("asc")
+    const [sortDirection, setSortDirection] = useState<TSortDir>("asc");
+    const [favorites, setFavorites] = useState<Array<Dog>>([])
     const [page, setPage] = useState<number>(1);
     const [locationAvailable, setLocationAvailable] = useState<boolean>(true);
     const [location, setLocation] = useState<MapPoint>({ lat: 41.881832, lon: -87.623177 })
@@ -122,6 +123,10 @@ export default function Dogs() {
         isLoggedIn ? 
         <div className={`w-screen h-fit`}>
             <Header showFilters={showFilters} setShowFilters={setShowFilters}></Header>
+            <div>
+                {total ? <h5>Search yielded {total} results</h5>: null}
+                <p>You have {10 - favorites.length} hearts left before being matched</p>
+            </div>
             <div className={`flex flex-wrap w-full justify-center`}>
                 {dogs.length > 0 ? dogs.map((dog: Dog) => (
                     <DogCard
