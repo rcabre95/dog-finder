@@ -1,7 +1,10 @@
 import { Dispatch, SetStateAction } from "react"
 import LogoutBtn from "./shared-ui/LogoutBtn"
+import { useState } from "react";
 
-export default function Header({ showFilters, setShowFilters }: { showFilters: boolean, setShowFilters: Dispatch<SetStateAction<boolean>> }) {
+
+export default function Header({ needsConf, showFilters, setShowFilters, setShowConf }: { needsConf: boolean, showFilters: boolean, setShowFilters: Dispatch<SetStateAction<boolean>>, setShowConf: Dispatch<SetStateAction<boolean>> }) {
+
 
     const toggleFilters = () => {
         setShowFilters(!showFilters)
@@ -15,7 +18,7 @@ export default function Header({ showFilters, setShowFilters }: { showFilters: b
         </div>
         <div>
             <button onClick={toggleFilters} >Filters</button>
-            <LogoutBtn />
+            <LogoutBtn needsConf={needsConf} setShowConf={setShowConf} />
         </div>
     </header>
   )
