@@ -71,9 +71,12 @@ export default function Dogs() {
         setAgeRange(newAgeRange);
         setDistance(newDistance);
 
-        const deconstructedNewBreeds: Array<string> = newBreeds.map((newBreed: IBreed) => {
-            return newBreed.name
-        })
+        const deconstructedNewBreeds: Array<string> = [];
+        for (let i = 0; i < newBreeds.length; i++) {
+            if (newBreeds[i].selected === true) {
+                deconstructedNewBreeds.push(newBreeds[i].name)
+            };
+        };
 
         const { minPoint, maxPoint } = Geo.getBoundingBox(location, newDistance);
         const newZipCodes = await SDK.getZipcodes(minPoint, maxPoint);
@@ -107,9 +110,9 @@ export default function Dogs() {
                         setLocation(coords);
                         const { minPoint, maxPoint } = Geo.getBoundingBox(location, distance);
                         // console.log([minPoint, maxPoint])
-                        console.log(breeds.length)
+                        console.log(breeds!.length)
                         SDK.getZipcodes(minPoint, maxPoint).then((zipCodes) => {
-                            const deconstructedBreeds: Array<string> = breeds.map((breed) => {
+                            const deconstructedBreeds: Array<string> = breeds!.map((breed) => {
                                 return breed.name
                             })
                             SDK.getDogs(deconstructedBreeds, zipCodes, "asc", ageRange[0], ageRange[1]).then((d) => {
@@ -157,6 +160,7 @@ export default function Dogs() {
                 : <Loader />}
             </div>
             {/* <pre>{JSON.stringify(dogs, null, 4)}</pre> */}
+            {breeds.length > 0 ? 
                 <Filters
                     breeds={breeds}
                     ageRange={ageRange}
@@ -165,6 +169,7 @@ export default function Dogs() {
                     setShowFilters={setShowFilters}
                     confirmFilters={confirmFilters}
                 />
+            : null}
             
         </div>
         : <YouMustBeLoggedIn />
