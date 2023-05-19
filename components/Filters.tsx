@@ -126,7 +126,7 @@ export function Filters({ showFilters, setShowFilters, breeds, ageRange, distanc
                                                             }}
                                                         />
                                                         
-                                                        <Image className={`hidden peer-checked:block w-4 h-4`} height={16} width={16} src={`/gifs/checkmark.svg`} alt={`checkmark`} />
+                                                        <Image className={`hidden peer-checked:block w-4 h-4`} height={16} width={16} src={`/svgs/checkmark.svg`} alt={`checkmark`} />
                                                         
                                                         <label className={`w-full h-full bg-slate-400 peer-checked:bg-green-300 flex items-center peer-checked:pl-2 pl-6`} htmlFor={`breeds.${index}.name`}>
                                                             

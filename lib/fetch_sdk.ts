@@ -35,6 +35,11 @@ export interface IDogsRes {
     total: number;
 }
 
+export interface IDogMatchRes {
+    dog: Dog;
+    status: number;
+}
+
 axios.defaults.withCredentials = true
 
 export class FetchSDK {
@@ -67,10 +72,8 @@ export class FetchSDK {
 
     public async getBreeds(): Promise<IBreedRes> {
         try { // reduce this to one get request
-            const breeds: Array<string> = (await this.axiosInstance.get(`/dogs/breeds`)).data;
-            const status: number = (await this.axiosInstance.get('/dogs/breeds')).status
-            DEBUG_PRINT("LOW", breeds)
-            return { breeds: breeds, status: status }
+            const res = (await this.axiosInstance.get(`/dogs/breeds`));
+            return { breeds: res.data, status: res.status }
         } catch(err) {
             return { breeds: [], status: 400 }
         }
@@ -139,6 +142,16 @@ export class FetchSDK {
         } catch(err) {
             console.log(err)
             throw err
+        }
+    }
+
+    public async getDog(id: string): Promise<IDogMatchRes> {
+        try {
+            const res = (await this.axiosInstance.post(`/dogs`, [id] ))
+            return { dog: res.data[0], status: res.status }
+        } catch(err) {
+            console.log(err);
+            throw err;
         }
     }
 

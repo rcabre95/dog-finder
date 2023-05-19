@@ -2,7 +2,7 @@ import { SDK } from "@/lib/fetch_sdk";
 import { useRouter } from "next/router";
 import { Dispatch, SetStateAction } from "react";
 
-export default function LogoutBtn({ needsConf=false, setShowConf }: { needsConf: boolean, setShowConf: Dispatch<SetStateAction<boolean>> }) {
+export default function LogoutBtn({ needsConf=false, setShowConf }: { needsConf: boolean, setShowConf?: Dispatch<SetStateAction<boolean>> }) {
     const router = useRouter();
 
     const logoutRedirect = async () => {
@@ -16,14 +16,14 @@ export default function LogoutBtn({ needsConf=false, setShowConf }: { needsConf:
 
     const logoutConf = () => {
         if (needsConf) {
-            setShowConf(true);
+            setShowConf!(true);
         } else {
             logoutRedirect();
         }
     }
 
     return (
-        <button onClick={logoutConf}>
+        <button className={`border bg-white w-16 h-8`} onClick={logoutConf}>
             Log out
         </button>
     )

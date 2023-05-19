@@ -2,8 +2,10 @@
 import DogCard from "@/components/shared-ui/DogCard";
 import { Dog } from "@/lib/dogs";
 import Header from "@/components/Header";
+import Footer from "@/components/shared-ui/Footer";
 import { GetServerSideProps } from "next"
 import { Filters } from "@/components/Filters";
+import { useRouter } from "next/router";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { useFieldArray, useForm } from 'react-hook-form'
 import { SDK } from "@/lib/fetch_sdk";
@@ -34,6 +36,7 @@ export default function Dogs() {
     const [showFilters, setShowFilters] = useState<boolean>(false);
     const [ageRange, setAgeRange] = useState<AgeRange>([0, 100])
     const [dogs, setDogs] = useState<Array<Dog>>([]);
+    const router = useRouter();
 
     const prevPage = async () => {
         
@@ -128,50 +131,66 @@ export default function Dogs() {
         });
     }, [])
 
+    useEffect(() => {
+        if (favorites.length === 10) {
+            SDK.dogMatch(favorites).then((d: string) => {
+                router.push({
+                    pathname: '/match',
+                    query: { dog: d }
+                }, '/match')
+            })
+        }
+    }, [favorites]);
+
     return (
 
         isLoggedIn ? 
-        <div className={`w-screen h-fit`}>
+        <div className={`w-screen h-fit relative flex flex-col`}>
             <Header
+                breeds={breeds}
                 needsConf={true}
                 showFilters={showFilters}
                 setShowFilters={setShowFilters}
                 setShowConf={setShowConf}
             />
             <ConfirmLogOut showConf={showConf} setShowConf={setShowConf} />
-            <div>
-                {total ? <h5>Search yielded {total} results</h5>: null}
-                <p>You have {10 - favorites.length} hearts left before being matched</p>
-            </div>
-            <div className={`flex flex-wrap w-full justify-center`}>
-                {dogs.length > 0 ? dogs.map((dog: Dog) => (
-                    <DogCard
-                        key={dog.id}
-                        id={dog.id}
-                        img={dog.img}
-                        name={dog.name}
-                        age={dog.age}
-                        breed={dog.breed}
-                        zip_code={dog.zip_code}
-                        favorites={favorites}
-                        handleFavorites={handleFavorites}
-                    />
-                ))
-                : <Loader />}
-            </div>
-            {/* <pre>{JSON.stringify(dogs, null, 4)}</pre> */}
             {breeds.length > 0 ? 
-                <Filters
-                    breeds={breeds}
-                    ageRange={ageRange}
-                    distance={distance}
-                    showFilters={showFilters}
-                    setShowFilters={setShowFilters}
-                    confirmFilters={confirmFilters}
-                />
-            : null}
-            
-        </div>
-        : <YouMustBeLoggedIn />
+                    <Filters
+                        breeds={breeds}
+                        ageRange={ageRange}
+                        distance={distance}
+                        showFilters={showFilters}
+                        setShowFilters={setShowFilters}
+                        confirmFilters={confirmFilters}
+                    />
+                : null}
+            <main className={`pt-16 flex flex-1 flex-col`}>
+                <div>
+                    {total ? <h5 className={`text-2xl font-bold`}>Search yielded <span className={`text-slate-400`}>{total}</span> results</h5>: null}
+                    <p className={`text-sm`}>You have <span className={`text-red-500`}>{10 - favorites.length}</span> hearts left before being matched</p>
+                </div>
+                <div className={`flex flex-wrap w-full justify-center`}>
+                    {dogs.length > 0 ? dogs.map((dog: Dog) => (
+                        <DogCard
+                            key={dog.id}
+                            id={dog.id}
+                            img={dog.img}
+                            name={dog.name}
+                            age={dog.age}
+                            breed={dog.breed}
+                            zip_code={dog.zip_code}
+                            favorites={favorites}
+                            handleFavorites={handleFavorites}
+                        />
+                    ))
+                    : <Loader />}
+                </div>
+                <div>
+
+                </div>
+            </main>
+                <Footer />
+            </div>
+            : <YouMustBeLoggedIn />
     )
 }

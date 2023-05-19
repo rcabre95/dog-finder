@@ -5,8 +5,8 @@ export default function Close({ setShowFilters }: { setShowFilters: Dispatch<Set
 
     return (
         <div className={`w-full h-5 flex justify-start`}>
-            <button onClick={() => { setShowFilters(false) }} className="relative h-full w-5">
-                <Image fill src={`/gifs/x-close.svg`} alt={`close svg`} />
+            <button type="button" onClick={() => { setShowFilters(false) }} className="relative h-full w-5">
+                <Image fill src={`/svgs/x-close.svg`} alt={`close svg`} />
             </button>
         </div>
     )
