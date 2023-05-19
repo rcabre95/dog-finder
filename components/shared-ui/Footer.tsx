@@ -15,7 +15,6 @@ export default function Footer() {
             <div className={`z-30 flex flex-col justify-center items-center text-myBlue`}>
                 <p className="z-30 text-sm">Raphael Cabrera &copy; 2023</p>
             </div>
-            
         </footer>
     )
 }
