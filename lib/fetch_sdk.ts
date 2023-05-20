@@ -100,29 +100,38 @@ export class FetchSDK {
         ageMin: number = 0,
         ageMax: number = 100,
         direction?: string
-        ): Promise<IDogIdsRes>
+        ): Promise<IDogIdsRes | any>
     {
-        console.log(`breeds: ${breeds}`)
-        console.log(`zipCodes: ${zipCodes}`)
-        console.log(`ageMin: ${ageMin}`)
-        console.log(`ageMax: ${ageMax}`)
-        console.log(`sort=breeds:${direction}`)
+        // console.log(`breeds: ${breeds}`)
+        // console.log(`zipCodes: ${zipCodes}`)
+        // console.log(`ageMin: ${ageMin}`)
+        // console.log(`ageMax: ${ageMax}`)
+        // console.log(`sort=breeds:${direction}`)
         
         try {
             const res = (await this.axiosInstance.get(`/dogs/search`, {
                 params: {
+                    // sort: `breeds:${direction}`,
+                    // sort: `breeds:[${direction}]`,
                     ...(breeds ? { breeds: breeds } : null),
                     ...(zipCodes ? { zipCodes: zipCodes } : null),
-                    ...(ageMin ? { ageMin: ageMin } : null),
-                    ...(ageMax ? { ageMax: ageMax } : null),
-                    // sort: `breeds:[${direction}]`
-                    // sort: `breeds:${direction}`
+                    ...(ageMin > -1 ? { ageMin: ageMin } : null),
+                    ...(ageMax > -1 ? { ageMax: ageMax } : null)
+                    // sort: {
+                    //     "breeds": [direction]
+                    // }
+                    // sort: `sort="breeds":[${direction}]`
                     // sort: `sort=breeds:${direction}`
-                    // sort: `sort=breeds:[${direction}]`
                 }
             })).data
+            // console.log({
+            //     ...(breeds ? { breeds: breeds } : null),
+            //     ...(zipCodes ? { zipCodes: zipCodes } : null),
+            //     ...(ageMin ? { ageMin: ageMin } : null),
+            //     ...(ageMax ? { ageMax: ageMax } : null),
+            // })
             
-            // console.log(dogIds)
+            // console.log(res.resultIds)
             return { resultIds: res.resultIds, total: res.total }
         } catch (err) {
             console.log(err) // throws cors error. fix later
@@ -134,10 +143,10 @@ export class FetchSDK {
         const res = await this.getDogIds(breeds, zipCodes, ageMin, ageMax, direction);
         const ids = res.resultIds;
         const total = res.total;
-        console.log(ids)
+        // console.log(ids)
         try {
             const dogs = (await this.axiosInstance.post(`/dogs`,  ids )).data
-            console.log(dogs)
+            // console.log(dogs)
             return { dogs: dogs, total: total }
         } catch(err) {
             console.log(err)
@@ -157,7 +166,7 @@ export class FetchSDK {
 
     public async dogMatch(favorites: Array<string>): Promise<string> {
         const match: string = (await this.axiosInstance.post(`/dogs/match`, favorites)).data.match;
-        console.log(match);
+        // console.log(match);
         return match
     }
 }
