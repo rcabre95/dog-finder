@@ -1,5 +1,7 @@
 import { Dog } from "@/lib/dogs";
 import Image from "next/image";
+import { useForm } from "react-hook-form";
+import { sendEmail } from "@/lib/utils/send_email";
 import YouMustBeLoggedIn from "@/components/shared-ui/YouMustBeLoggedIn";
 import { SDK } from "@/lib/fetch_sdk";
 import LogoutBtn from "@/components/shared-ui/LogoutBtn";
@@ -20,8 +22,11 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
 export default function Match({ dogId }: { dogId: string }) {
     // const { name, age, img, zip_code, breed } = match;
-    const [dog, setDog] = useState<Dog | null>(null)
-    const [status, setStatus] = useState<number | null>(null)
+    const [dog, setDog] = useState<Dog | null>(null);
+    const [status, setStatus] = useState<number | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+
+    const { register, handleSubmit, formState: {errors} } = useForm();
 
     useEffect(() => {
         SDK.getDog(dogId).then((d) => {
@@ -43,13 +48,33 @@ export default function Match({ dogId }: { dogId: string }) {
             </div>
             </header>
             <main className={`pt-16`}>
-                <h1>Match</h1>
-                <div className={`relative h-16 w-32`}>
+                <h3>Congratulations! You've matched with...</h3>
+                <h4>{dog.name}</h4>
+                <div className={`relative h-36 w-72`}>
                     <Image fill src={dog.img} alt={dog.name} />
                 </div>
                 <p>{dog.age}</p>
                 <p>{dog.breed}</p>
                 <p>{dog.zip_code}</p>
+
+                <h4>You can now log out, or you can get the details sent to you email and be automatically logged out.</h4>
+                <form className={``}
+                onSubmit={handleSubmit(async (data) => {
+                    setLoading(true);
+                    let email = await sendEmail(data.name, data.email, dog.name, dog.zip_code);
+                    if (email.status === 200) {
+                        alert("Thanks for the message! I will get back to you at the email you provided.")
+                    }
+                    if (email.status === 500) {
+                        alert("Something went wrong. Please try messaging me on my linkedin provided below.")
+                    }
+                    if (email.status === 450) {
+                        alert("Not sure what you're trying to accomplish here... This is just a dev project.")
+                    }
+                    setLoading(false);
+                })}>
+                    
+                </form>
             </main>
         </div>
         : <Loader /> ) : <Loader />
