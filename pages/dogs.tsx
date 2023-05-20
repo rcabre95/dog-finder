@@ -3,14 +3,11 @@ import DogCard from "@/components/shared-ui/DogCard";
 import { Dog } from "@/lib/dogs";
 import Header from "@/components/Header";
 import Footer from "@/components/shared-ui/Footer";
-import { GetServerSideProps } from "next"
 import { Filters } from "@/components/Filters";
 import { useRouter } from "next/router";
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
-import { useFieldArray, useForm } from 'react-hook-form'
+import { useState, useEffect } from "react";
 import { SDK } from "@/lib/fetch_sdk";
 import { Geo, MapPoint } from "@/lib/utils/distance";
-import LogoutBtn from "@/components/shared-ui/LogoutBtn";
 import YouMustBeLoggedIn from "@/components/shared-ui/YouMustBeLoggedIn";
 import Loader from "@/components/shared-ui/Loader";
 import ConfirmLogOut from "@/components/ConfirmLogOut";
@@ -36,6 +33,7 @@ export default function Dogs() {
     const [showFilters, setShowFilters] = useState<boolean>(false);
     const [ageRange, setAgeRange] = useState<AgeRange>([0, 100])
     const [dogs, setDogs] = useState<Array<Dog>>([]);
+    const [loadingDogs, setLoadingDogs] = useState<boolean>(true)
     const router = useRouter();
 
     const prevPage = async () => {
@@ -49,30 +47,34 @@ export default function Dogs() {
     const handleFavorites = (id: string) => {
         let favoritesCopy = JSON.parse(JSON.stringify(favorites));
         if (favoritesCopy.includes(id)) {
-            console.log("already favorited... removing")
+            // console.log("already favorited... removing")
             const idx: number = favoritesCopy.indexOf(id);
             favoritesCopy.splice(idx, 1);
-            console.log(favoritesCopy)
+            // console.log(favoritesCopy)
             setFavorites(favoritesCopy);
-            console.log(favorites)
+            // console.log(favorites)
         } else {
             if (favorites.length > 9) {
                 alert("You have run out of favorites")
             }
-            console.log("not yet favorited... adding")
+            // console.log("not yet favorited... adding")
             favoritesCopy.push(id);
-            console.log(favoritesCopy);
+            // console.log(favoritesCopy);
             setFavorites(favoritesCopy);
-            console.log(favorites)
+            // console.log(favorites)
         }
         console.log(favorites)
     }
 
     const confirmFilters = async (newBreeds: Array<IBreed>, newAgeRange: AgeRange, newDistance: number) => {
-        setDogs([]);
+        setLoadingDogs(true);
+        console.log("setDogs")
         setBreeds(newBreeds);
+        console.log("setBreeds")
         setAgeRange(newAgeRange);
+        console.log("setAgeRange")
         setDistance(newDistance);
+        console.log("setDistance")
 
         const deconstructedNewBreeds: Array<string> = [];
         for (let i = 0; i < newBreeds.length; i++) {
@@ -80,19 +82,29 @@ export default function Dogs() {
                 deconstructedNewBreeds.push(newBreeds[i].name)
             };
         };
+        console.log(deconstructedNewBreeds)
 
         const { minPoint, maxPoint } = Geo.getBoundingBox(location, newDistance);
-        const newZipCodes = await SDK.getZipcodes(minPoint, maxPoint);
-        const newDogs = await SDK.getDogs(deconstructedNewBreeds, newZipCodes, sortDirection, newAgeRange[0], newAgeRange[1]);
+        console.log(minPoint, maxPoint)
+        const newZipCodes: Array<string> = await SDK.getZipcodes(minPoint, maxPoint);
+        console.log(newZipCodes)
+        const resDogs = await SDK.getDogs(deconstructedNewBreeds, newZipCodes, sortDirection, newAgeRange[0], newAgeRange[1]);
+        const newDogs: Array<Dog> = resDogs.dogs
+        const newTotal: number = resDogs.total
+        console.log(newDogs)
 
         setDogs(newDogs);
+        setTotal(newTotal);
+        console.log(`dogs state: ${JSON.stringify(dogs)}`)
         setShowFilters(false);
+        setLoadingDogs(false);
     }
 
     
     
     useEffect(() => {
         // var initZipCodes: string[] = ["60630"]
+        console.log("running componentDidMount")
         SDK.getBreeds().then((d) => {
             if (d.status !== 200) {
                 setIsLoggedIn(false)
@@ -100,7 +112,7 @@ export default function Dogs() {
                 const formattedBreeds: Array<IBreed> = d.breeds.map((breed) => {
                     return {
                         name: breed,
-                        selected: true
+                        selected: false
                     }
                 })
                 setBreeds(formattedBreeds);
@@ -113,14 +125,15 @@ export default function Dogs() {
                         setLocation(coords);
                         const { minPoint, maxPoint } = Geo.getBoundingBox(location, distance);
                         // console.log([minPoint, maxPoint])
-                        console.log(breeds!.length)
+                        // console.log(breeds!.length)
                         SDK.getZipcodes(minPoint, maxPoint).then((zipCodes) => {
                             const deconstructedBreeds: Array<string> = breeds!.map((breed) => {
                                 return breed.name
                             })
                             SDK.getDogs(deconstructedBreeds, zipCodes, "asc", ageRange[0], ageRange[1]).then((d) => {
-                                setDogs(d.dogs)
-                                setTotal(d.total)
+                                setDogs(d.dogs);
+                                setTotal(d.total);
+                                setLoadingDogs(false);
                             })
                             
                         })
@@ -144,7 +157,7 @@ export default function Dogs() {
 
     return (
 
-        isLoggedIn ? 
+        isLoggedIn ? (
         <div className={`w-screen h-fit relative flex flex-col`}>
             <Header
                 breeds={breeds}
@@ -170,27 +183,30 @@ export default function Dogs() {
                     <p className={`text-sm`}>You have <span className={`text-red-500`}>{10 - favorites.length}</span> hearts left before being matched</p>
                 </div>
                 <div className={`flex flex-wrap w-full justify-center`}>
-                    {dogs.length > 0 ? dogs.map((dog: Dog) => (
-                        <DogCard
-                            key={dog.id}
-                            id={dog.id}
-                            img={dog.img}
-                            name={dog.name}
-                            age={dog.age}
-                            breed={dog.breed}
-                            zip_code={dog.zip_code}
-                            favorites={favorites}
-                            handleFavorites={handleFavorites}
-                        />
-                    ))
-                    : <Loader />}
-                </div>
+                    {loadingDogs ? 
+                        <Loader />
+                    :
+                            Array.isArray(dogs) ? dogs.map((dog: Dog) => (
+                                <DogCard
+                                    key={dog.id}
+                                    id={dog.id}
+                                    img={dog.img}
+                                    name={dog.name}
+                                    age={dog.age}
+                                    breed={dog.breed}
+                                    zip_code={dog.zip_code}
+                                    favorites={favorites}
+                                    handleFavorites={handleFavorites}
+                                />
+                            )): null
+                        }
+                    </div>
                 <div>
 
                 </div>
             </main>
                 <Footer />
-            </div>
+            </div>)
             : <YouMustBeLoggedIn />
     )
 }
