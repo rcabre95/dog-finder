@@ -1,16 +1,20 @@
-import { Dog } from "@/lib/dogs";
+import { Dog } from "@/lib/fetch_sdk";
 import Image from "next/image";
-import { useForm } from "react-hook-form";
-import { sendEmail } from "@/lib/utils/send_email";
 import YouMustBeLoggedIn from "@/components/shared-ui/YouMustBeLoggedIn";
 import { SDK } from "@/lib/fetch_sdk";
 import LogoutBtn from "@/components/shared-ui/LogoutBtn";
 import { GetServerSideProps } from "next"
 import { useEffect, useState } from "react";
 import Loader from "@/components/shared-ui/Loader";
+import SendMailForm from "@/components/SendMailForm";
+import { useRouter } from "next/router";
+import Footer from "@/components/shared-ui/Footer";
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-    const dogId: string = query.dog as string;
+    let dogId: string = "none";
+    if (query.dog) {
+        dogId = query.dog as string;
+    }
     
 
     return {
@@ -21,63 +25,50 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 }
 
 export default function Match({ dogId }: { dogId: string }) {
-    // const { name, age, img, zip_code, breed } = match;
     const [dog, setDog] = useState<Dog | null>(null);
     const [status, setStatus] = useState<number | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
-
-    const { register, handleSubmit, formState: {errors} } = useForm();
+    const router = useRouter()
+    const anAges: Array<number> = [8, 11, 18]
 
     useEffect(() => {
+        if (dogId === "none") {
+            router.push("/dogs")
+        }
         SDK.getDog(dogId).then((d) => {
             setStatus(d.status);
-            setDog(d.dog);
+            if (d.status === 200) {
+                setDog(d.dog)
+            }
         })
     }, [])
 
     return (
-        status ? (
-        status !== 200 ?
-        <YouMustBeLoggedIn />
-        : dog ? 
-        <div className={``}>
+        status === 401 ?
+        <YouMustBeLoggedIn /> : 
+        (dog ?
+        <div className={`h-screen`}>
             <header className={`w-full h-16 bg-purple-300 flex items-center justify-between fixed z-40`}>
                 <h3 className={`pl-2 text-xl`}>Furry Friend Finder</h3>
                 <div className={` w-36 flex justify-between mr-2`}>
                 <LogoutBtn needsConf={false} />
             </div>
             </header>
-            <main className={`pt-16`}>
-                <h3>Congratulations! You've matched with...</h3>
-                <h4>{dog.name}</h4>
-                <div className={`relative h-36 w-72`}>
+            <main className={`pt-16 h-full flex flex-col items-center`}>
+                <section className={`w-full h-2/3 flex flex-col items-center`}>
+                    <h3>Congratulations! You've matched with...</h3>
+                <h4 className={`text-3xl`}>{dog.name}</h4>
+                <div className={`relative h-56 w-96`}>
                     <Image fill src={dog.img} alt={dog.name} />
                 </div>
-                <p>{dog.age}</p>
-                <p>{dog.breed}</p>
-                <p>{dog.zip_code}</p>
-
-                <h4>You can now log out, or you can get the details sent to you email and be automatically logged out.</h4>
-                <form className={``}
-                onSubmit={handleSubmit(async (data) => {
-                    setLoading(true);
-                    let email = await sendEmail(data.name, data.email, dog.name, dog.zip_code);
-                    if (email.status === 200) {
-                        alert("Thanks for the message! I will get back to you at the email you provided.")
-                    }
-                    if (email.status === 500) {
-                        alert("Something went wrong. Please try messaging me on my linkedin provided below.")
-                    }
-                    if (email.status === 450) {
-                        alert("Not sure what you're trying to accomplish here... This is just a dev project.")
-                    }
-                    setLoading(false);
-                })}>
-                    
-                </form>
+                <p className={`w-72 text-center text-lg`}>{`${dog.name} is ${anAges.indexOf(dog.age) > -1 ? "an": "a"} ${dog.age} year old ${dog.breed} who lives in the ${dog.zip_code} area, and can't wait to meet you!`}</p>
+                </section>
+                <section className={`w-full h-1/3 bg-cyan-200 flex flex-col items-center`}>
+                    <p className={`text-xl font-bold mb-4`}>Please enter your information below to get {dog.name}'s contact information sent directly to your email!</p>
+                    <SendMailForm dog={dog} />
+                </section>
             </main>
-        </div>
-        : <Loader /> ) : <Loader />
+            <Footer />
+        </div> : <Loader />)
         
     )
 }
