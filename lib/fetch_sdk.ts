@@ -99,55 +99,42 @@ export class FetchSDK {
         zipCodes?: Array<number | string>,
         ageMin: number = 0,
         ageMax: number = 100,
+        from: number = 0,
         direction?: string
         ): Promise<IDogIdsRes | any>
     {
-        // console.log(`breeds: ${breeds}`)
-        // console.log(`zipCodes: ${zipCodes}`)
-        // console.log(`ageMin: ${ageMin}`)
-        // console.log(`ageMax: ${ageMax}`)
-        // console.log(`sort=breeds:${direction}`)
+        const size: number = 25;
         
         try {
             const res = (await this.axiosInstance.get(`/dogs/search`, {
                 params: {
-                    // sort: `breeds:${direction}`,
-                    // sort: `breeds:[${direction}]`,
-                    ...(breeds ? { breeds: breeds } : null),
-                    ...(zipCodes ? { zipCodes: zipCodes } : null),
-                    ...(ageMin > -1 ? { ageMin: ageMin } : null),
-                    ...(ageMax > -1 ? { ageMax: ageMax } : null)
-                    // sort: {
-                    //     "breeds": [direction]
-                    // }
-                    // sort: `sort="breeds":[${direction}]`
-                    // sort: `sort=breeds:${direction}`
+                    sort: `breed:${direction}`,
+                    breeds,
+                    zipCodes,
+                    ageMin,
+                    ageMax,
+                    from,
+                    size
                 }
-            })).data
-            // console.log({
-            //     ...(breeds ? { breeds: breeds } : null),
-            //     ...(zipCodes ? { zipCodes: zipCodes } : null),
-            //     ...(ageMin ? { ageMin: ageMin } : null),
-            //     ...(ageMax ? { ageMax: ageMax } : null),
-            // })
-            
-            // console.log(res.resultIds)
-            return { resultIds: res.resultIds, total: res.total }
+            }))
+            console.log(res)
+
+            return { resultIds: res.data.resultIds, total: res.data.total }
         } catch (err) {
             console.log(err) // throws cors error. fix later
             throw err
         }
     }
 
-    public async getDogs(breeds: Array<string>, zipCodes: Array<string>, direction: string = "asc", ageMin?: number, ageMax?: number): Promise<any> {
-        const res = await this.getDogIds(breeds, zipCodes, ageMin, ageMax, direction);
+    public async getDogs(breeds: Array<string>, zipCodes: Array<string>, direction: string = "asc", from: number, ageMin?: number, ageMax?: number): Promise<any> {
+        const res = await this.getDogIds(breeds, zipCodes, ageMin, ageMax, from, direction );
         const ids = res.resultIds;
         const total = res.total;
         // console.log(ids)
         try {
-            const dogs = (await this.axiosInstance.post(`/dogs`,  ids )).data
+            const dogs = (await this.axiosInstance.post(`/dogs`,  ids ))
             // console.log(dogs)
-            return { dogs: dogs, total: total }
+            return { dogs: dogs.data, total: total }
         } catch(err) {
             console.log(err)
             throw err
