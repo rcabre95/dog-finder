@@ -32,7 +32,7 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
                 <li>Phone: ${req.body.phone}</li>
                 <li>Email: ${req.body.dogEmail}</li>
             </ul>
-            <p>If you wish to reply, please reply to ${req.body.email}</p>`
+            <p>PS. Thank you for taking the time to look through, and appreciate my work. If you like what you see, I would be happy to meet with you and discuss what we can accomplish together. My email is raphael.cabrera111@gmail.com, if you would like to get in touch. Thank you.</p>`
   }
 
   if(req.method === "POST") {
