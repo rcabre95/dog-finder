@@ -65,33 +65,37 @@ export class FetchSDK {
             const success = await this.axiosInstance.post(`/auth/logout`)
             return success.status
         } catch(err) {
-            console.log(err);
+            console.error(err);
             throw err
         }
     }
 
     public async getBreeds(): Promise<IBreedRes> {
-        try { // reduce this to one get request
-            const res = (await this.axiosInstance.get(`/dogs/breeds`));
+        
+        return this.axiosInstance.get(`/dogs/breeds`).then((res) => {
             return { breeds: res.data, status: res.status }
-        } catch(err) {
-            return { breeds: [], status: 400 }
-        }
+        }).catch((error) => {
+            console.error(`Error in getBreeds: ${error}`)
+            return { breeds: [], status: error.response.status }
+        })
     }
+    
+    public async getZipcodes(bottomLeft: MapPoint, topRight: MapPoint): Promise<Array<string>> {
 
-    public async getZipcodes(bottomLeft: MapPoint, topRight: MapPoint) {
-        // console.log([bottomLeft, topRight]);
-        const locations: Array<string> = (await this.axiosInstance.post(`/locations/search`,
-        {
+        return this.axiosInstance.post(`/locations/search`, {
             geoBoundingBox: {
                 bottom_left: bottomLeft,
                 top_right: topRight
-        }}))
-        .data.results.map((location: Location) => {
-            return location.zip_code
-        });
-        // console.log(locations)
-        return locations
+            }
+        }).then((d) => {
+            let resLocations = d.data.results.map((location: Location) => {
+                return location.zip_code
+            })
+            return resLocations
+        }).catch((error) => {
+            console.log(error);
+            return []
+        })
     }
 
     public async getDogIds(
@@ -105,40 +109,35 @@ export class FetchSDK {
     {
         const size: number = 25;
         
-        try {
-            const res = (await this.axiosInstance.get(`/dogs/search`, {
-                params: {
-                    sort: `breed:${direction}`,
-                    breeds,
-                    zipCodes,
-                    ageMin,
-                    ageMax,
-                    from,
-                    size
-                }
-            }))
-            console.log(res)
-
-            return { resultIds: res.data.resultIds, total: res.data.total }
-        } catch (err) {
-            console.log(err) // throws cors error. fix later
-            throw err
-        }
+        return this.axiosInstance(`/dogs/search`, {
+            params: {
+                sort: `breed:${direction}`,
+                breeds,
+                zipCodes,
+                ageMin,
+                ageMax,
+                from,
+                size
+            }
+        }).then((d) => {
+            return { resultIds: d.data.resultIds, total: d.data.total}
+        }).catch((error) => {
+            console.log(error);
+            return { resultIds: [], total: 0 }
+        })
     }
 
     public async getDogs(breeds: Array<string>, zipCodes: Array<string>, direction: string = "asc", from: number, ageMin?: number, ageMax?: number): Promise<any> {
         const res = await this.getDogIds(breeds, zipCodes, ageMin, ageMax, from, direction );
         const ids = res.resultIds;
         const total = res.total;
-        // console.log(ids)
-        try {
-            const dogs = (await this.axiosInstance.post(`/dogs`,  ids ))
-            // console.log(dogs)
-            return { dogs: dogs.data, total: total }
-        } catch(err) {
-            console.log(err)
-            throw err
-        }
+
+        return this.axiosInstance.post(`/dogs`, ids ).then((d) => {
+            return { dogs: d.data, total: total }
+        }).catch((error) => {
+            console.log(error);
+            return { dogs: [], total: 0 }
+        })
     }
 
     public async getDog(id: string): Promise<IDogMatchRes> {
@@ -146,7 +145,7 @@ export class FetchSDK {
             const res = (await this.axiosInstance.post(`/dogs`, [id] ))
             return { dog: res.data[0], status: res.status }
         } catch(err) {
-            console.log(err);
+            console.error(err);
             throw err;
         }
     }
