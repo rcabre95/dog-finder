@@ -21,15 +21,6 @@ export default function ConfirmLogOut({ showConf, setShowConf }: { showConf: boo
     }
 
     return (
-        // <div>
-        //     <h5>Are you sure you want to log out?</h5>
-        //     <p>You have not yet been matched with a dog!</p>
-        //     <div>
-        //         <button onClick={logoutRedirect}>Log Out</button>
-        //         <button onClick={continueBrowsing}>Continue matching</button>
-        //     </div>
-        // </div>
-
     <Transition appear show={showConf} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={continueBrowsing}>
             <Transition.Child
@@ -69,12 +60,14 @@ export default function ConfirmLogOut({ showConf, setShowConf }: { showConf: boo
                         </div>
 
                         <div className="mt-4">
-                        <button type="button" onClick={logoutRedirect}>
+                        <button type="button"
+                        className="inline-flex justify-center rounded-md border border-transparent bg-white px-4 py-2 text-sm font-medium text-blue-900 transition-colors duration-200 hover:bg-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 mr-4"
+                        onClick={logoutRedirect}>
                             Log out
                         </button>
                         <button
                             type="button"
-                            className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                            className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 transition-colors duration-200 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                             onClick={continueBrowsing}
                         >
                             Continue matching
