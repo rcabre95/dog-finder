@@ -13,7 +13,7 @@ export default function LoginForm() {
 
     return (
 
-    <section className={`bg-green-300 w-full h-fit flex flex-col items-center justify-center`}>
+    <section className={`w-full h-fit flex flex-col items-center justify-center`}>
         <h3 className={`text-4xl mb-8`}>Login</h3>
         <form className={`flex flex-col w-fit items-center`}
             onSubmit={handleSubmit(async (data) => {
@@ -28,15 +28,15 @@ export default function LoginForm() {
             } else { alert("Something went wrong with our servers...")}
             })}
         >
-            <div className={`w-full flex bg-green-300`}>
-                <label className={`flex`} htmlFor="name">Name:</label>
-                <input id='name' className={`w-5/6 flex ml-2 mb-2`}
+            <div className={`w-full flex justify-center items-center rounded-md border py-2 px-4 bg-white ${errors.name ? null : "mb-5" }`}>
+                <label className={`mr-2`} htmlFor="name">Name:</label>
+                <input id='name' className={`w-5/6 flex`}
                     {...register("name",
                     {
                         required: "You must enter a name.",
                         minLength: {
                         value: 3,
-                        message: "Your name must be at least 3 characters long. Please use your last name if needed."
+                        message: "Your name must be at least 3 characters long."
                         }
                     }
                     )}
@@ -44,10 +44,13 @@ export default function LoginForm() {
                     placeholder='Enter your name...'
                 />
             </div>
+            <p className={`${errors.name ? "block" : "hidden"} mb-1 text-xs text-red-600`}>
+                    {errors.name ? errors.name.message?.toString() : null}
+            </p>
 
-            <div className={`w-full flex bg-green-300 justify-end`}>
-                <label className={`flex`} htmlFor="email">Email:</label>
-                <input id="email" className={`w-5/6 flex ml-2 mb-2`}
+            <div className={`w-full flex justify-center items-center rounded-md border py-2 px-4 bg-white ${errors.email ? null : "mb-5" }`}>
+                <label className={`mr-3`} htmlFor="email">Email:</label>
+                <input id="email" className={`w-5/6 flex`}
                     {...register("email",
                     {
                         required: "You must enter your email.",
@@ -61,8 +64,11 @@ export default function LoginForm() {
                     placeholder='Enter your email...'
                 />
             </div>
+                <p className={`${errors.email ? "block" : "hidden"} mb-1 text-xs text-red-600`}>
+                    {errors.email ? errors.email.message?.toString() : null}
+                </p>
 
-            <button className={`h-10 w-fit px-2 bg-blue-300 rounded-sm border border-black`} type="submit">{loading ? <Loader /> : "Submit"}</button>
+            <button className={`h-10 w-fit px-2 bg-blue-300 rounded-sm border border-black mb-2`} type="submit">{loading ? <Loader /> : "Submit"}</button>
         </form>
     </section>
     )
