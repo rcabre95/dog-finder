@@ -3,12 +3,12 @@ import { AgeRange, IBreed } from "@/pages/dogs";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Transition, Listbox } from "@headlessui/react";
 import Close from "./shared-ui/Close";
-import RangeSlider from "./RangeSlider";
 import Image from "next/image";
-import { SetStateAction, Dispatch, useEffect, Component } from "react";
+import { SetStateAction, Dispatch, Fragment } from "react";
+import { MapPoint } from "@/lib/utils/distance";
 
-export function Filters({ showFilters, setShowFilters, breeds, ageRange, distance, confirmFilters }: 
-    { showFilters: boolean, setShowFilters: Dispatch<SetStateAction<boolean>>, breeds: Array<IBreed>, ageRange: AgeRange, distance: number,
+export function Filters({ location, showFilters, setShowFilters, breeds, ageRange, distance, confirmFilters }: 
+    { location: MapPoint,showFilters: boolean, setShowFilters: Dispatch<SetStateAction<boolean>>, breeds: Array<IBreed>, ageRange: AgeRange, distance: number,
     confirmFilters: (newBreeds: Array<IBreed>, newAgeRange: AgeRange, newDistance: number) => Promise<void>}) {
 
     const { register, handleSubmit, setValue, control, getValues, formState: { errors } } = useForm({
@@ -25,10 +25,6 @@ export function Filters({ showFilters, setShowFilters, breeds, ageRange, distanc
         name: "breeds"
     })
 
-    useEffect(() => {
-        console.log(breeds);
-    })
-
     return (
         <Transition show={showFilters} as="div">
             <Transition.Child
@@ -43,7 +39,7 @@ export function Filters({ showFilters, setShowFilters, breeds, ageRange, distanc
                 <div className="fixed inset-0 bg-black bg-opacity-25 z-20" />
             </Transition.Child>
             <div className="fixed inset-0 overflow-y-auto z-20 flex justify-center items-center">
-                <div className="flex flex-col h-fit w-5/6 md:w-1/2 items-center justify-center p-4">
+                <div className="flex flex-col h-fit w-5/6 md:w-1/3 max-w-lg items-center justify-center p-4">
                     <Transition.Child
                         className={`h-full w-full`}
                         as="div"
@@ -56,20 +52,26 @@ export function Filters({ showFilters, setShowFilters, breeds, ageRange, distanc
                     >
                         <form className={`bg-white h-full w-full z-30 rounded-sm px-2 py-1 flex flex-col`}
                         onSubmit={handleSubmit(async (data) => {
-                            console.log(data)
+                            // console.log(data)
                             await confirmFilters(data.breeds, [data.minAge, data.maxAge], data.distance)
                         })}>
                             <Close setShowFilters={setShowFilters} />
                             <h3 className={`text-xl font-bold w-full text-center`}>Filter</h3>
-                            <div className={`rounded-md shadow-sm w-full border px-2 py-2 flex flex-col items-center mb-4`}>
+                            <div className={`rounded-md shadow-sm 
+                            ${location.lat === 0 && location.lon === 0 ? "hidden" : null} w-full border px-2 py-2 flex flex-col items-center mb-4`}>
                                 <label className={`font-light`} htmlFor="distanceId">Distance </label>
-                                <input id="distanceId" className={`w-16 border border-black text-center rounded-sm`}
+                                <select id="distanceId" className={`w-20 border border-black text-center rounded-sm`}
                                     {...register("distance", {
                                         required: "You must insert a preferred search distance.",
                                         valueAsNumber: true
                                     })}
-                                    type="number"
-                                />
+                                >
+                                    <option value={5}>5 km</option>
+                                    <option value={10}>10 km</option>
+                                    <option value={20}>20 km</option>
+                                    <option value={50}>50 km</option>
+                                    <option value={0.1}>MAX</option>
+                                </select>
                             </div>
                             <div className={`h-fit flex justify-between w-full border shadow-sm rounded-md p-2 mb-4`}>
                                 <div className={`flex flex-col w-16`}>
@@ -110,33 +112,40 @@ export function Filters({ showFilters, setShowFilters, breeds, ageRange, distanc
                             <div className={` w-full flex flex-col h-72 rounded-md mb-4`}>
                                 <Listbox name="breeds" defaultValue={fields}  multiple>
                                     <Listbox.Button className={`h-1/6 border rounded-md shadow-sm mb-2`}>Select Breeds</Listbox.Button>
-                                    <Listbox.Options className={`flex h-5/6 flex-col overflow-scroll border rounded-md shadow-sm`}>
-                                        {fields.map((field, index) => {
-                                            return (
-                                                <Listbox.Option key={field.id} value="any">
-                                                    <div className={`h-10 flex items-center relative bg-blue-300 border-b`}>
-                                                        <input
-                                                            className={`hidden peer`} 
-                                                            id={`breeds.${index}.name`}
-                                                            type="checkbox"
-                                                            {...register(`breeds.${index}.selected`)}
-                                                            onChange={() => {
-                                                                setValue(`breeds.${index}.selected`, !getValues(`breeds.${index}.selected`))
-                                                                console.log(getValues(`breeds.${index}.selected`))
-                                                            }}
-                                                        />
-                                                        
-                                                        <Image className={`hidden peer-checked:block w-4 h-4`} height={16} width={16} src={`/svgs/checkmark.svg`} alt={`checkmark`} />
-                                                        
-                                                        <label className={`w-full h-full bg-slate-400 peer-checked:bg-green-300 flex items-center peer-checked:pl-2 pl-6`} htmlFor={`breeds.${index}.name`}>
+                                    <Transition
+                                        as={Fragment}
+                                        leave="transition ease-in duration-100"
+                                        leaveFrom="opacity-100"
+                                        leaveTo="opacity-0"
+                                    >
+                                        <Listbox.Options className={`flex h-5/6 flex-col overflow-scroll border rounded-md shadow-sm`}>
+                                            {fields.map((field, index) => {
+                                                return (
+                                                    <Listbox.Option key={field.id} value="any">
+                                                        <div className={`h-10 flex items-center relative bg-blue-300 border-b`}>
+                                                            <input
+                                                                className={`hidden peer`} 
+                                                                id={`breeds.${index}.name`}
+                                                                type="checkbox"
+                                                                {...register(`breeds.${index}.selected`)}
+                                                                onChange={() => {
+                                                                    setValue(`breeds.${index}.selected`, !getValues(`breeds.${index}.selected`))
+                                                                    // console.log(getValues(`breeds.${index}.selected`))
+                                                                }}
+                                                            />
                                                             
-                                                            {breeds[index].name}
-                                                        </label>
-                                                    </div>
-                                                </Listbox.Option>
-                                            )
-                                        })}
-                                    </Listbox.Options>
+                                                            <Image className={`hidden peer-checked:block w-4 h-4`} height={16} width={16} src={`/svgs/checkmark.svg`} alt={`checkmark`} />
+                                                            
+                                                            <label className={`w-full h-full bg-slate-400 peer-checked:bg-green-300 flex items-center peer-checked:pl-2 pl-6`} htmlFor={`breeds.${index}.name`}>
+                                                                
+                                                                {breeds[index].name}
+                                                            </label>
+                                                        </div>
+                                                    </Listbox.Option>
+                                                )
+                                            })}
+                                        </Listbox.Options>
+                                    </Transition>
                                 </Listbox>
                                 {/* {fields.map((field, index) => {
                                     return (
