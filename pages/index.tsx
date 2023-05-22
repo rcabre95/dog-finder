@@ -14,13 +14,13 @@ export default function Home() {
   
 
   return (
-    <>
+    <div className={`flex flex-col h-fit`}>
       <main className={`h-fit w-screen flex flex-col items-center justify-center bg-slate-200 ${inter.className}`}>
         <IntroBanner stepsRef={stepsRef} />
         <Steps ref={stepsRef} />
         <LoginForm />
       </main>
       <Footer />
-    </>
+    </div>
   )
 }
