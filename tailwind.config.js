@@ -13,21 +13,22 @@ module.exports = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
         },
         colors: {
-          myOrange: {
-            DEFAULT: "#ffa820"
-          },
-          myPurple: {
-            DEFAULT: "#380c3c"
-          },
-          mylight: {
-            DEFAULT: "#fbdfb3"
-          },
           myBrown: {
             DEFAULT: "#a06631",
-            light: "#ccb49c"
+            light: "#B5876D",
+            dark: "#402E32"
+          },
+          burnt: {
+            DEFAULT: "#C86C34"
+          },
+          cream: {
+            DEFAULT: "#FFF6ED"
           }
         }
     },
+  },
+  variants: {
+    fill: ['hover', 'focus']
   },
   plugins: [],
 }
