@@ -14,9 +14,14 @@ module.exports = {
       },
       theme: {
         colors: {
-          fetch: {
+          palatte: {
             orange: "#ffa820",
-            purple: "#380c3c"
+            purple: "#380c3c",
+            skin: "#fbdfb3",
+            brown: {
+              DEFAULT: "#a06631",
+              light: "#ccb49c"
+            }
           }
         }
       }
