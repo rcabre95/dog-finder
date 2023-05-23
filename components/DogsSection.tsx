@@ -7,7 +7,10 @@ export default function DogsSection({ loadingDogs, dogs, favorites, handleFavori
     return (
         <section className={`flex flex-wrap w-full justify-center md:w-4/6 ${loadingDogs ? "pt-4": null}`}>
             {loadingDogs ? 
-                <Loader />
+                <div className={`h-screen`}>
+
+                    <Loader />
+                </div>
             :
                     Array.isArray(dogs) ? dogs.map((dog: Dog) => (
                         <DogCard

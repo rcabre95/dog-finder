@@ -245,7 +245,7 @@ export default function Dogs() {
                         location={location}
                     />
                 : null}
-            <main className={`pt-16 flex flex-1 flex-col items-center min-h-screen`}>
+            <main className={`pt-16 flex flex-1 flex-col items-center h-fit`}>
                 <ResultsBanner
                     total={total}
                     favorites={favorites}
@@ -259,8 +259,8 @@ export default function Dogs() {
                     favorites={favorites}
                     handleFavorites={handleFavorites}
                 />
-            </main>
                 <PageNavigation page={page} prevPage={prevPage} nextPage={nextPage} />
+            </main>
                 <Footer />
             </div>)
             : <YouMustBeLoggedIn />

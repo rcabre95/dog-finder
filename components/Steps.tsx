@@ -15,7 +15,7 @@ export const Steps = forwardRef(({}, ref: ForwardedRef<HTMLElement>) =>  {
               <p className={`text-lg hidden md:block text-left`}>Simply enter you name and email below to start the matching process!</p>
             </div>
             <div className={`h-52 md:h-96 md:w-1/3 w-80 relative rounded-md overflow-hidden mb-2 md:order-1`}>
-              <Image fill src={`https://media.tenor.com/-p-p8MvwM3AAAAAC/dog-funny.gif`} alt={`dog computer funny gif`} />
+              <Image fill src={`https://media.tenor.com/-p-p8MvwM3AAAAAC/dog-funny.gif`} alt={`dog computer funny gif`}  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
             </div>
           </div>
           <p className={`text-sm block md:hidden`}>Simply enter you name and email below to start the matching process!</p>
@@ -29,7 +29,7 @@ export const Steps = forwardRef(({}, ref: ForwardedRef<HTMLElement>) =>  {
             </div>
             <div
             className={`h-52 md:h-96 md:w-1/3 w-80 relative rounded-md overflow-hidden mb-2 md:order-2`}>
-              <Image fill src={`https://media.tenor.com/pIthFxQEgIEAAAAd/pick-a-cup-i-choose-you.gif`} alt={`dog choosing cup funny gif`} />
+              <Image fill src={`https://media.tenor.com/pIthFxQEgIEAAAAd/pick-a-cup-i-choose-you.gif`} alt={`dog choosing cup funny gif`}  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
             </div>
           </div>
           <p className={`text-sm block md:hidden`}>Once you get to the selection page, you need to select 10 of your favorite dogs to be automatically matched with your future furry friend! You can also use the filters to get very specific about what kind of dog you want.</p>
@@ -41,8 +41,8 @@ export const Steps = forwardRef(({}, ref: ForwardedRef<HTMLElement>) =>  {
               <p className={`text-4xl font-extralight md:text-6xl md:mb-8`}>Get matched!</p>
               <p className={`text-lg hidden md:flex`}>Once you've selected you favorites, you will be automatically shown your match, and will be provided with contact details on request.</p>
             </div>
-            <div className={`h-52 md:h-96 md:w-1/3 w-80 relative rounded-md overflow-hidden mb-2 md:order-1`}>
-              <Image fill src={`https://media.tenor.com/9d_np0GQ1lgAAAAC/dog-shake-paw.gif`} alt={`dog match gif`} />
+            <div className={`h-52 md:h-96 md:w-1/3 min-w- w-80 relative rounded-md overflow-hidden mb-2 md:order-1`}>
+              <Image fill src={`https://media.tenor.com/9d_np0GQ1lgAAAAC/dog-shake-paw.gif`} alt={`dog match gif`}  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
             </div>
           </div>
           <p className={`text-sm block md:hidden`}>Once you've selected you favorites, you will be automatically shown your match, and will be provided with contact details on request.</p>
