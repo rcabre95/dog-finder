@@ -76,7 +76,7 @@ export default function Dogs() {
                 });
         });
 
-    }, [page])
+    }, [page, ageRange, breeds, distance, location, sortDirection])
 
     const reSort = () => {
         setLoadingDogs(true)
@@ -111,7 +111,7 @@ export default function Dogs() {
                     setLoadingDogs(false);
                 })
         });
-    }, [sortDirection])
+    }, [sortDirection, ageRange, breeds, distance, location])
 
     const handleFavorites = (id: string) => {
         let favoritesCopy = JSON.parse(JSON.stringify(favorites));
@@ -209,7 +209,7 @@ export default function Dogs() {
             })
             
         })
-    }, [location]);
+    }, [location, ageRange, breeds, distance]);
 
     useEffect(() => {
         if (favorites.length === 10) {
@@ -220,7 +220,7 @@ export default function Dogs() {
                 }, '/match')
             })
         }
-    }, [favorites]);
+    }, [favorites, router]);
 
     return (
 

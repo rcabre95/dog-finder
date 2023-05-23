@@ -40,7 +40,7 @@ export default function Match({ dogId }: { dogId: string }) {
                 setDog(d.dog)
             }
         })
-    }, [])
+    }, [dogId, router])
 
     return (
         dogId === "none" ? <Loader /> : (

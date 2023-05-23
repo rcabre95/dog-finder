@@ -22,7 +22,7 @@ export default function NotFound() {
         if (timeLeft === 0) {
             router.push('/')
         }
-    }, [timeLeft])
+    }, [timeLeft, router])
 
     return (
         <div className={`h-screen w-screen flex flex-col items-center justify-center`}>
@@ -30,9 +30,9 @@ export default function NotFound() {
             <div  className={`h-52 w-72 relative rounded-md overflow-hidden`}>
                 <Image fill src={`https://media.tenor.com/1sWoFUxwUyEAAAAd/dog-wow.gif`} alt={`awkward dog funny gif`} />
             </div>
-            <p>Not sure what you're looking for...</p>
-            <p>but it's not here.</p>
-            <p className="text-center">If you're not automatically sent home in {timeLeft} seconds, <Link className={`hover:underline text-blue-400`} href={`/`}>click here.</Link></p>
+            <p>Not sure what you&apos;re looking for...</p>
+            <p>but it&apos;s not here.</p>
+            <p className="text-center">If you&apos;re not automatically sent home in {timeLeft} seconds, <Link className={`hover:underline text-blue-400`} href={`/`}>click here.</Link></p>
         </div>
 
     )

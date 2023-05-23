@@ -22,7 +22,7 @@ export default function ServerError() {
         if (timeLeft === 0) {
             router.push('/')
         }
-    }, [timeLeft])
+    }, [timeLeft, router])
 
     return (
         <div className={`h-screen w-screen flex flex-col items-center justify-center`}>
@@ -31,8 +31,8 @@ export default function ServerError() {
                 <Image fill src={`https://media.tenor.com/5-oJdjeBnD0AAAAC/hiding-doggys.gif`} alt={`dog hiding face funny gif`} />
             </div>
             <p>Oh this is embarassing...</p>
-            <p>Something is wrong on our end, so we're sending you back home.</p>
-            <p className="text-center">If you're not automatically sent home in {timeLeft} seconds, <Link className={`hover:underline text-blue-400`} href={`/`}>click here.</Link></p>
+            <p>Something is wrong on our end, so we&apos;re sending you back home.</p>
+            <p className="text-center">If you&apos;re not automatically sent home in {timeLeft} seconds, <Link className={`hover:underline text-blue-400`} href={`/`}>click here.</Link></p>
         </div>
 
     )

@@ -22,7 +22,7 @@ export default function YouMustBeLoggedIn() {
         if (timeLeft === 0) {
             router.push('/')
         }
-    }, [timeLeft])
+    }, [timeLeft, router])
 
     return (
         <div className={`h-screen w-screen flex flex-col items-center justify-center`}>
