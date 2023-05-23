@@ -7,9 +7,9 @@ import Image from "next/image";
 import { SetStateAction, Dispatch, Fragment } from "react";
 import { MapPoint } from "@/lib/utils/distance";
 
-export function Filters({ location, showFilters, setShowFilters, breeds, ageRange, distance, confirmFilters }: 
+export default function Filters({ location, showFilters, setShowFilters, breeds, ageRange, distance, confirmFilters, saveData }: 
     { location: MapPoint,showFilters: boolean, setShowFilters: Dispatch<SetStateAction<boolean>>, breeds: Array<IBreed>, ageRange: AgeRange, distance: number,
-    confirmFilters: (newBreeds: Array<IBreed>, newAgeRange: AgeRange, newDistance: number) => Promise<void>}) {
+    confirmFilters: (newBreeds: Array<IBreed>, newAgeRange: AgeRange, newDistance: number) => Promise<void>, saveData?: (data: any) => void}) {
 
     const { register, handleSubmit, setValue, control, getValues, formState: { errors } } = useForm({
         defaultValues: {
@@ -53,6 +53,9 @@ export function Filters({ location, showFilters, setShowFilters, breeds, ageRang
                         <form className={`bg-white h-full w-full z-30 rounded-sm px-2 py-1 flex flex-col`}
                         onSubmit={handleSubmit(async (data) => {
                             // console.log(data)
+                            if (saveData) {
+                                saveData(data)
+                            }
                             await confirmFilters(data.breeds, [data.minAge, data.maxAge], data.distance)
                         })}>
                             <Close setShowFilters={setShowFilters} />
@@ -111,7 +114,7 @@ export function Filters({ location, showFilters, setShowFilters, breeds, ageRang
 
                             <div className={` w-full flex flex-col h-72 rounded-md mb-4`}>
                                 <Listbox name="breeds" defaultValue={fields}  multiple>
-                                    <Listbox.Button className={`h-1/6 border rounded-md shadow-sm mb-2`}>Select Breeds</Listbox.Button>
+                                    <Listbox.Button data-testid="breeds-btn" className={`h-1/6 border rounded-md shadow-sm mb-2`}>Select Breeds</Listbox.Button>
                                     <Transition
                                         as={Fragment}
                                         leave="transition ease-in duration-100"
@@ -147,24 +150,6 @@ export function Filters({ location, showFilters, setShowFilters, breeds, ageRang
                                         </Listbox.Options>
                                     </Transition>
                                 </Listbox>
-                                {/* {fields.map((field, index) => {
-                                    return (
-                                        <div className={`h-fit w-96 flex flex-col bg-lime-200`} key={field.id}>
-                                            <input
-                                                className={`hidden peer`} 
-                                                id={`breeds.${index}.name`}
-                                                type="checkbox"
-                                                {...register(`breeds.${index}.selected`)}
-                                                onChange={() => {
-                                                    setValue(`breeds.${index}.selected`, !getValues(`breeds.${index}.selected`))
-                                                    console.log(getValues(`breeds.${index}.selected`))
-                                                }}
-                                            />
-                                            <label className={`h-10 w-fit bg-slate-400 peer-checked:bg-green-300`} htmlFor={`breeds.${index}.name`}>{breeds[index].name}</label>
-                                        </div>
-                                    )
-                                    })} */}
-                                {/* {JSON.stringify(fields, null, 4)} */}
                             </div>
                             <div className={`w-full h-fit flex justify-center justify-self-end mb-2`}>
                                 <button className={`px-4 py-2 border rounded-md shadow-sm`} type="submit">Submit</button>
