@@ -228,7 +228,7 @@ export default function Dogs() {
     return (
 
         isLoggedIn ? (
-        <div className={`w-screen h-fit relative flex flex-col`}>
+        <div className={`w-screen h-fit relative flex flex-col bg-white`}>
             <MetaTags
                 title="Furry Friend Finder"
                 pageUrl={process.env.NEXT_PUBLIC_HOME_URL!}
@@ -254,7 +254,7 @@ export default function Dogs() {
                         location={location}
                     />
                 : null}
-            <main className={`pt-16 flex flex-1 flex-col items-center h-fit mb-4`}>
+            <main className={`pt-20 flex flex-1 flex-col items-center h-fit mb-4`}>
                 <ResultsBanner
                     total={total}
                     favorites={favorites}

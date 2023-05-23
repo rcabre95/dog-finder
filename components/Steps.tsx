@@ -14,7 +14,7 @@ export const Steps = forwardRef(({}, ref: ForwardedRef<HTMLElement>) =>  {
               <p className={`text-4xl font-extralight md:text-6xl md:mb-8`}>Log in</p>
               <p className={`text-lg hidden md:block text-left`}>Simply enter your name and email below to start the matching process!</p>
             </div>
-            <div className={`h-52 md:h-96 md:w-1/3 w-80 relative rounded-md overflow-hidden mb-2 md:order-1`}>
+            <div className={`h-52 md:h-96 md:w-1/3 min-w-80 w-80 relative rounded-md overflow-hidden mb-2 md:order-1`}>
               <Image fill src={`https://media.tenor.com/-p-p8MvwM3AAAAAC/dog-funny.gif`} alt={`dog computer funny gif`}  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
             </div>
           </div>

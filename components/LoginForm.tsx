@@ -18,7 +18,6 @@ export default function LoginForm({ saveData }: { saveData?: (data: any) => void
         <form className={`flex flex-col w-fit items-center`}
             onSubmit={handleSubmit(async (data) => {
             setLoading(true);
-            // Login(data);
             let status = await SDK.login(data.name, data.email)
             if (saveData) {
                 saveData(status);
@@ -26,8 +25,6 @@ export default function LoginForm({ saveData }: { saveData?: (data: any) => void
             setLoading(false);
             if (status === 200) {
                 router.push('/dogs');
-                // let breeds = await SDK.getBreeds();
-                // console.log(breeds);
             } else { alert("Something went wrong with our servers...") }
             })}
         >
@@ -71,7 +68,7 @@ export default function LoginForm({ saveData }: { saveData?: (data: any) => void
                     {errors.email ? errors.email.message?.toString() : null}
                 </p>
 
-            <button className={`h-10 w-fit px-2 bg-blue-300 rounded-sm border border-black mb-2`} type="submit">{loading ? <Loader /> : "Submit"}</button>
+            <button disabled={loading} className={`hover:border-0 h-10 w-28 mb-4 flex justify-center items-center rounded-md shadow-sm hover:bg-burnt hover:text-cream disabled:bg-slate-400 border text-burnt bg-cream border-burnt transition-colors duration-300`} type="submit">{loading ? <Loader /> : "Submit"}</button>
         </form>
     </section>
     )

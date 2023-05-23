@@ -1,12 +1,9 @@
-import { Inter } from 'next/font/google'
 import LoginForm from '@/components/LoginForm'
 import Footer from '@/components/shared-ui/Footer'
 import { Steps } from '@/components/Steps'
 import IntroBanner from '@/components/IntroBanner'
 import { useRef, ForwardedRef } from 'react'
 import MetaTags from '@/components/shared-ui/MetaTags'
-
-const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
 
@@ -23,7 +20,7 @@ export default function Home() {
         imgUrl="/images/logo.png"
         keywords="dog, dogs, pet, pet shop, near me, pet shop near me, buy dog, buy dog near me, animals"
       />
-      <main className={`h-fit w-screen flex flex-col items-center justify-center bg-whiie ${inter.className}`}>
+      <main className={`h-fit w-screen flex flex-col items-center justify-center bg-cream`}>
         <IntroBanner stepsRef={stepsRef} />
         <Steps ref={stepsRef} />
         <LoginForm />
