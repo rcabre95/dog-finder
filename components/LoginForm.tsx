@@ -5,7 +5,7 @@ import { SDK } from '@/lib/fetch_sdk'
 import Loader from './shared-ui/Loader'
 
 
-export default function LoginForm({ saveData }: { saveData?: (data: any) => void }) {
+export default function LoginForm({ saveData }: { saveData?: () => void }) {
 
     const [loading, setLoading] = useState<boolean>(false);
     const router = useRouter();
@@ -18,14 +18,17 @@ export default function LoginForm({ saveData }: { saveData?: (data: any) => void
         <form className={`flex flex-col w-fit items-center`}
             onSubmit={handleSubmit(async (data) => {
             setLoading(true);
-            let status = await SDK.login(data.name, data.email)
             if (saveData) {
-                saveData(status);
+                saveData();
             }
-            setLoading(false);
-            if (status === 200) {
-                router.push('/dogs');
-            } else { alert("Something went wrong with our servers...") }
+            SDK.login(data.name, data.email).then((d) => {
+                if (d === 200) {
+                    router.push('/dogs');
+                } else {
+                    alert("Something went wrong with our servers...")
+                }
+                setLoading(false);
+            })
             })}
         >
             <div className={`w-full flex justify-center items-center rounded-md border py-2 px-4 bg-white ${errors.name ? null : "mb-5" }`}>
