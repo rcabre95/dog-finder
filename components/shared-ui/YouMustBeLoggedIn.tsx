@@ -30,8 +30,8 @@ export default function YouMustBeLoggedIn() {
             <div  className={`h-52 w-72 relative rounded-md overflow-hidden`}>
                 <Image fill src={`https://media.tenor.com/wy2zHeWyf2gAAAAd/side-eye-dog-suspicious-look.gif`} alt={`suspicious dog funny gif`} />
             </div>
-            <p>Please log in and you'll be automatically redirected back here.</p>
-            <p className="text-center">If you're not automatically sent home in {timeLeft} seconds, <Link className={`hover:underline text-blue-400`} href={`/`}>click here.</Link></p>
+            <p>Please log in and you&apos;ll be automatically redirected back here.</p>
+            <p className="text-center">If you&apos;re not automatically sent home in {timeLeft} seconds, <Link className={`hover:underline text-blue-400`} href={`/`}>click here.</Link></p>
         </div>
 
     )
