@@ -1,6 +1,4 @@
-import { render, screen, act, cleanup } from '@testing-library/react'
-import ReactDOM from 'react-dom/client';
-import mockRouter from 'next-router-mock';
+import { render, screen } from '@testing-library/react'
 import userEvent from "@testing-library/user-event"
 import '@testing-library/jest-dom';
 import Filters from '@/components/Filters';
