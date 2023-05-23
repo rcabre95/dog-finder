@@ -72,7 +72,6 @@ export default function Filters({ location, showFilters, setShowFilters, breeds,
                                     <option value={5}>5 km</option>
                                     <option value={10}>10 km</option>
                                     <option value={20}>20 km</option>
-                                    <option value={50}>50 km</option>
                                     <option value={0.1}>MAX</option>
                                 </select>
                             </div>
