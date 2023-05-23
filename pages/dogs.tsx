@@ -9,8 +9,8 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { SDK } from "@/lib/fetch_sdk";
 import { Geo, MapPoint } from "@/lib/utils/distance";
+import MetaTags from "@/components/shared-ui/MetaTags";
 import YouMustBeLoggedIn from "@/components/shared-ui/YouMustBeLoggedIn";
-import Loader from "@/components/shared-ui/Loader";
 import ConfirmLogOut from "@/components/ConfirmLogOut";
 
 export type AgeRange = [number, number];
@@ -189,6 +189,9 @@ export default function Dogs() {
                 }
                 
             }
+        return {
+            
+        }
         });
     }, [])
 
@@ -226,6 +229,12 @@ export default function Dogs() {
 
         isLoggedIn ? (
         <div className={`w-screen h-fit relative flex flex-col`}>
+            <MetaTags
+                title="Furry Friend Finder"
+                pageUrl={process.env.NEXT_PUBLIC_HOME_URL!}
+                description={`Find your furry friend today!`}
+                imgUrl="/images/logo.png"
+            />
             <Header
                 breeds={breeds}
                 needsConf={true}
@@ -245,7 +254,7 @@ export default function Dogs() {
                         location={location}
                     />
                 : null}
-            <main className={`pt-16 flex flex-1 flex-col items-center h-fit`}>
+            <main className={`pt-16 flex flex-1 flex-col items-center h-fit mb-4`}>
                 <ResultsBanner
                     total={total}
                     favorites={favorites}
