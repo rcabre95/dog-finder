@@ -1,8 +1,10 @@
-import DogCard from "@/components/shared-ui/DogCard";
+import DogsSection from "@/components/DogsSection";
+import PageNavigation from "@/components/shared-ui/PageNavigation";
+import ResultsBanner from "@/components/ResultsBanner";
 import { Dog } from "../lib/fetch_sdk"
 import Header from "@/components/Header";
 import Footer from "@/components/shared-ui/Footer";
-import { Filters } from "@/components/Filters";
+import Filters from "@/components/Filters";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { SDK } from "@/lib/fetch_sdk";
@@ -33,7 +35,7 @@ export default function Dogs() {
     const [loadingDogs, setLoadingDogs] = useState<boolean>(true)
     const router = useRouter();
 
-    const prevPage = async () => {
+    const prevPage = () => {
         if (page < 2) {
             alert("This is the first page.")
             return;
@@ -42,7 +44,7 @@ export default function Dogs() {
         setPage(page - 1);
     }
 
-    const nextPage = async () => {
+    const nextPage = () => {
         const numPages: number = total! / 25;
         if (numPages < page + 1) {
             alert("This is the last page")
@@ -151,6 +153,14 @@ export default function Dogs() {
         setShowFilters(false);
         setLoadingDogs(false);
     }
+
+    const formatBreeds = (toFormat: Array<string>) => {
+        const formatted = toFormat.map((breed) => {
+            return { name: breed, selected: false }
+        })
+
+        return formatted
+    }
     
     useEffect(() => {
         console.log("on mount")
@@ -158,12 +168,7 @@ export default function Dogs() {
             if (d.status !== 200) {
                 setIsLoggedIn(false)
             } else {
-                const formattedBreeds: Array<IBreed> = d.breeds.map((breed) => {
-                    return {
-                        name: breed,
-                        selected: false
-                    }
-                })
+                const formattedBreeds: Array<IBreed> = formatBreeds(d.breeds);
                 setBreeds(formattedBreeds);
                 if (navigator.geolocation) {
                     console.log("navigator available")
@@ -241,40 +246,21 @@ export default function Dogs() {
                     />
                 : null}
             <main className={`pt-16 flex flex-1 flex-col items-center min-h-screen`}>
-                <div className="flex flex-col justify-center items-center">
-                    <div className={`w-full mb-2`}>
-                    {total ? <h5 className={`text-2xl font-bold`}>Search yielded <span className={`text-slate-400`}>{total}</span> results</h5>: null}
-                    <p className={`text-sm`}>You have <span className={`text-red-500`}>{10 - favorites.length}</span> hearts left before being matched</p>
-                    </div>
-                    {sortDirection ?
-                    <button onClick={reSort} className={`w-52 h-8 border rounded-md shadow-sm`}>Sort: Breeds {sortDirection === "asc" ? "A-Z" : "Z-A" }</button>
-                    : null}
-                </div>
-                <div className={`flex flex-wrap w-full justify-center md:w-4/6 ${loadingDogs ? "pt-4": null}`}>
-                    {loadingDogs ? 
-                        <Loader />
-                    :
-                            Array.isArray(dogs) ? dogs.map((dog: Dog) => (
-                                <DogCard
-                                    key={dog.id}
-                                    id={dog.id}
-                                    img={dog.img}
-                                    name={dog.name}
-                                    age={dog.age}
-                                    breed={dog.breed}
-                                    zip_code={dog.zip_code}
-                                    favorites={favorites}
-                                    handleFavorites={handleFavorites}
-                                />
-                            )): null
-                        }
-                </div>
+                <ResultsBanner
+                    total={total}
+                    favorites={favorites}
+                    sortDirection={sortDirection}
+                    reSort={reSort}
+                />
+                <PageNavigation page={page} prevPage={prevPage} nextPage={nextPage} />
+                <DogsSection
+                    loadingDogs={loadingDogs}
+                    dogs={dogs}
+                    favorites={favorites}
+                    handleFavorites={handleFavorites}
+                />
             </main>
-                <div className={`flex bg-green-400 w-full px-10 justify-around h-14 items-center `}>
-                    <button disabled={page < 2} onClick={prevPage} className={`rounded-sm bg-cyan-300`}>Prev</button>
-                    <div className={`font-bold text-gray-700 rounded-full bg-white flex items-center justify-center h-7 w-7 p-2`}>{page}</div>
-                    <button onClick={nextPage} className={`rounded-sm bg-cyan-300`}>Next</button>
-                </div>
+                <PageNavigation page={page} prevPage={prevPage} nextPage={nextPage} />
                 <Footer />
             </div>)
             : <YouMustBeLoggedIn />
