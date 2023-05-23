@@ -124,7 +124,7 @@ export default function Filters({ location, showFilters, setShowFilters, breeds,
                                             {fields.map((field, index) => {
                                                 return (
                                                     <Listbox.Option key={field.id} value="any">
-                                                        <div className={`h-10 flex items-center relative bg-blue-300 border-b`}>
+                                                        <div className={`h-10 flex items-center relative bg-cream border-b`}>
                                                             <input
                                                                 className={`hidden peer`} 
                                                                 id={`breeds.${index}.name`}
@@ -136,9 +136,9 @@ export default function Filters({ location, showFilters, setShowFilters, breeds,
                                                                 }}
                                                             />
                                                             
-                                                            <Image className={`hidden peer-checked:block w-4 h-4`} height={16} width={16} src={`/svgs/checkmark.svg`} alt={`checkmark`} />
+                                                            <Image className={`hidden peer-checked:block w-4 h-4`} height={16} width={16} src={`/svgs/paw_print.svg`} alt={`checkmark`} />
                                                             
-                                                            <label className={`w-full h-full bg-slate-400 peer-checked:bg-green-300 flex items-center peer-checked:pl-2 pl-6`} htmlFor={`breeds.${index}.name`}>
+                                                            <label className={`w-full h-full transition-colors duration-200 bg-slate-400 peer-checked:bg-cream flex items-center peer-checked:pl-2 pl-6`} htmlFor={`breeds.${index}.name`}>
                                                                 
                                                                 {breeds[index].name}
                                                             </label>
