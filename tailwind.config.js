@@ -11,20 +11,22 @@ module.exports = {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-      },
-      theme: {
+        },
         colors: {
-          palatte: {
-            orange: "#ffa820",
-            purple: "#380c3c",
-            skin: "#fbdfb3",
-            brown: {
-              DEFAULT: "#a06631",
-              light: "#ccb49c"
-            }
+          myOrange: {
+            DEFAULT: "#ffa820"
+          },
+          myPurple: {
+            DEFAULT: "#380c3c"
+          },
+          mylight: {
+            DEFAULT: "#fbdfb3"
+          },
+          myBrown: {
+            DEFAULT: "#a06631",
+            light: "#ccb49c"
           }
         }
-      }
     },
   },
   plugins: [],
