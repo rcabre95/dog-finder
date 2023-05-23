@@ -88,9 +88,11 @@ export class FetchSDK {
                 top_right: topRight
             }
         }).then((d) => {
+            
             let resLocations = d.data.results.map((location: Location) => {
                 return location.zip_code
             })
+            console.log(resLocations);
             return resLocations
         }).catch((error) => {
             console.log(error);
@@ -109,7 +111,7 @@ export class FetchSDK {
     {
         const size: number = 25;
         
-        return this.axiosInstance(`/dogs/search`, {
+        return this.axiosInstance.get(`/dogs/search`, {
             params: {
                 sort: `breed:${direction}`,
                 breeds,
@@ -120,6 +122,7 @@ export class FetchSDK {
                 size
             }
         }).then((d) => {
+            console.log(d.data.resultIds);
             return { resultIds: d.data.resultIds, total: d.data.total}
         }).catch((error) => {
             console.log(error);
@@ -133,6 +136,7 @@ export class FetchSDK {
         const total = res.total;
 
         return this.axiosInstance.post(`/dogs`, ids ).then((d) => {
+            console.log(d.data)
             return { dogs: d.data, total: total }
         }).catch((error) => {
             console.log(error);
@@ -141,19 +145,31 @@ export class FetchSDK {
     }
 
     public async getDog(id: string): Promise<IDogMatchRes> {
-        try {
-            const res = (await this.axiosInstance.post(`/dogs`, [id] ))
-            return { dog: res.data[0], status: res.status }
-        } catch(err) {
-            console.error(err);
-            throw err;
-        }
+
+        return this.axiosInstance.post(`/dogs`, [id] ).then((d) => {
+            console.log(d.data)
+            return { dog: d.data[0], status: d.status }
+        }).catch((error) => {
+            console.log(error);
+            const emptyDog = {
+                id: "string",
+                img: "string",
+                name: "string",
+                age: 0,
+                zip_code: "string",
+                breed: "string"
+            }
+            return { dog: emptyDog, status: 403 }
+        })
     }
 
     public async dogMatch(favorites: Array<string>): Promise<string> {
-        const match: string = (await this.axiosInstance.post(`/dogs/match`, favorites)).data.match;
-        // console.log(match);
-        return match
+        return this.axiosInstance.post(`/dogs/match`, favorites).then((d) => {
+            console.log(d.data.match)
+            return d.data.match
+        }).catch((error) => {
+            return "none"
+        })
     }
 }
 
