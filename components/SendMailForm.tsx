@@ -5,7 +5,7 @@ import { useState } from "react";
 import Loader from "@/components/shared-ui/Loader";
 import { Dog } from "@/lib/fetch_sdk";
 
-export default function SendMailForm({ dog }: { dog: Dog }) {
+export default function SendMailForm({ dog, saveData }: { dog: Dog, saveData?: (data: any) => void }) {
     const [loading, setLoading] = useState<boolean>(false);
 
     const router = useRouter()
@@ -16,6 +16,9 @@ export default function SendMailForm({ dog }: { dog: Dog }) {
         <form className={`flex flex-col w-fit items-center`}
             onSubmit={handleSubmit(async (data) => {
                 setLoading(true);
+                if(saveData) {
+                    saveData(data)
+                }
                 let email = await sendEmail(data.name, data.email, dog.name, dog.zip_code);
                 if (email.status === 200) {
                     alert("Thanks for choosing furry friend finder! An email containing the contact information has been sent to the provided email");

@@ -5,7 +5,7 @@ import { SDK } from '@/lib/fetch_sdk'
 import Loader from './shared-ui/Loader'
 
 
-export default function LoginForm() {
+export default function LoginForm({ saveData }: { saveData?: (data: any) => void }) {
 
     const [loading, setLoading] = useState<boolean>(false);
     const router = useRouter();
@@ -20,12 +20,15 @@ export default function LoginForm() {
             setLoading(true);
             // Login(data);
             let status = await SDK.login(data.name, data.email)
+            if (saveData) {
+                saveData(status);
+            }
             setLoading(false);
             if (status === 200) {
                 router.push('/dogs');
                 // let breeds = await SDK.getBreeds();
                 // console.log(breeds);
-            } else { alert("Something went wrong with our servers...")}
+            } else { alert("Something went wrong with our servers...") }
             })}
         >
             <div className={`w-full flex justify-center items-center rounded-md border py-2 px-4 bg-white ${errors.name ? null : "mb-5" }`}>
