@@ -55,7 +55,7 @@ export default function Dogs() {
     }
 
     useEffect(() => {
-        console.log("on page update")
+        // console.log("on page update")
         let breedsCopy = JSON.parse(JSON.stringify(breeds));
 
         const deconstructedBreeds: Array<string> = [];
@@ -89,7 +89,7 @@ export default function Dogs() {
     }
 
     useEffect(() => {
-        console.log("on sortDirection update")
+        // console.log("on sortDirection update")
         setLoadingDogs(true);
 
         let breedsCopy = JSON.parse(JSON.stringify(breeds));
@@ -163,7 +163,7 @@ export default function Dogs() {
     }
     
     useEffect(() => {
-        console.log("on mount")
+        // console.log("on mount")
         SDK.getBreeds().then((d) => {
             if (d.status !== 200) {
                 setIsLoggedIn(false)
@@ -171,7 +171,7 @@ export default function Dogs() {
                 const formattedBreeds: Array<IBreed> = formatBreeds(d.breeds);
                 setBreeds(formattedBreeds);
                 if (navigator.geolocation) {
-                    console.log("navigator available")
+                    // console.log("navigator available")
                     navigator.geolocation.getCurrentPosition(async (position) => {
                         const coords: MapPoint = {
                             lat: position.coords.latitude,
@@ -180,7 +180,7 @@ export default function Dogs() {
                         setLocation(coords);
                     })
                 } else {
-                    console.log("navigator unavailable")
+                    // console.log("navigator unavailable")
                     let defaultCoords = {
                         lat: 0,
                         lon: 0,
@@ -192,13 +192,11 @@ export default function Dogs() {
         return {
             
         }
-        }).catch((error) => {
-            alert(error)
-        });
+        })
     }, [])
 
     useEffect(() => {
-        console.log("on location update")
+        // console.log("on location update")
         const { minPoint, maxPoint } = Geo.getBoundingBox(location, distance);
         SDK.getZipcodes(minPoint, maxPoint).then((zipCodes) => {
             const deconstructedBreeds: Array<string> = [];
