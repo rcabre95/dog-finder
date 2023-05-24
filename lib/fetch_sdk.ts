@@ -47,7 +47,8 @@ export class FetchSDK {
 
     constructor(private url: string) {
         this.axiosInstance = axios.create({
-            baseURL: url
+            baseURL: url,
+            headers: {"Access-Control-Allow-Origin": "*"}
         });
     }
 
