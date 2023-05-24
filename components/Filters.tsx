@@ -4,12 +4,15 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { Transition, Listbox } from "@headlessui/react";
 import Close from "./shared-ui/Close";
 import Image from "next/image";
-import { SetStateAction, Dispatch, Fragment } from "react";
+import { SetStateAction, Dispatch, Fragment, useState } from "react";
+import Loader from "./shared-ui/Loader";
 import { MapPoint } from "@/lib/utils/distance";
 
 export default function Filters({ location, showFilters, setShowFilters, breeds, ageRange, distance, confirmFilters, saveData }: 
     { location: MapPoint,showFilters: boolean, setShowFilters: Dispatch<SetStateAction<boolean>>, breeds: Array<IBreed>, ageRange: AgeRange, distance: number,
     confirmFilters: (newBreeds: Array<IBreed>, newAgeRange: AgeRange, newDistance: number) => Promise<void>, saveData?: (data: any) => void}) {
+
+    const [loading, setLoading] = useState<boolean>(false);
 
     const { register, handleSubmit, setValue, control, getValues, formState: { errors } } = useForm({
         defaultValues: {
@@ -36,9 +39,9 @@ export default function Filters({ location, showFilters, setShowFilters, breeds,
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
             >
-                <div className="fixed inset-0 bg-black bg-opacity-25 z-20" />
+                <div className="fixed inset-0 bg-black bg-opacity-25 z-30" />
             </Transition.Child>
-            <div className="fixed inset-0 overflow-y-auto z-20 flex justify-center items-center">
+            <div className="fixed inset-0 overflow-y-auto z-40 flex justify-center items-center">
                 <div className="flex flex-col h-fit w-5/6 md:w-1/3 max-w-lg items-center justify-center p-4">
                     <Transition.Child
                         className={`h-full w-full`}
@@ -50,20 +53,22 @@ export default function Filters({ location, showFilters, setShowFilters, breeds,
                         leaveFrom="opacity-100 scale-100"
                         leaveTo="opacity-0 scale-95"
                     >
-                        <form className={`bg-white h-full w-full z-30 rounded-sm px-2 py-1 flex flex-col`}
+                        <form className={`bg-white h-full w-full z-40 rounded-sm px-2 py-1 flex flex-col`}
                         onSubmit={handleSubmit(async (data) => {
+                            setLoading(true)
                             // console.log(data)
                             if (saveData) {
                                 saveData(data)
                             }
                             await confirmFilters(data.breeds, [data.minAge, data.maxAge], data.distance)
+                            setLoading(false)
                         })}>
-                            <Close setShowFilters={setShowFilters} />
+                            <Close setShow={setShowFilters} />
                             <h3 className={`text-xl font-bold w-full text-center`}>Filter</h3>
                             <div className={`rounded-md shadow-sm 
                             ${location.lat === 0 && location.lon === 0 ? "hidden" : null} w-full border px-2 py-2 flex flex-col items-center mb-4`}>
                                 <label className={`font-light`} htmlFor="distanceId">Distance </label>
-                                <select id="distanceId" className={`w-20 border border-black text-center rounded-sm`}
+                                <select id="distanceId" className={`w-20 border rounded-md text-center`}
                                     {...register("distance", {
                                         required: "You must insert a preferred search distance.",
                                         valueAsNumber: true
@@ -79,7 +84,7 @@ export default function Filters({ location, showFilters, setShowFilters, breeds,
                                 <div className={`flex flex-col w-16`}>
                                     <label className={`font-light`} htmlFor="minAgeId">Min Age</label>
                                     <input
-                                        className={`w-full rounded-sm border border-black text-center`}
+                                        className={`w-full rounded-md border  text-center`}
                                         id="minAgeId"
                                         {...register("minAge", {
                                             required: "You must enter a minimum age for your dog.",
@@ -96,7 +101,7 @@ export default function Filters({ location, showFilters, setShowFilters, breeds,
                                 <div className={`flex flex-col w-16`}>
                                     <label className={`font-light`} htmlFor="maxAgeId">Max Age</label>
                                     <input
-                                        className={`w-full rounded-sm border border-black text-center`}
+                                        className={`w-full rounded-md border text-center`}
                                         id="maxAgeId"
                                         {...register("maxAge", {
                                             required: "You must enter a minimum age for your dog.",
@@ -113,7 +118,7 @@ export default function Filters({ location, showFilters, setShowFilters, breeds,
 
                             <div className={` w-full flex flex-col h-72 rounded-md mb-4`}>
                                 <Listbox name="breeds" defaultValue={fields}  multiple>
-                                    <Listbox.Button data-testid="breeds-btn" className={`h-1/6 border rounded-md shadow-sm mb-2`}>Select Breeds</Listbox.Button>
+                                    <Listbox.Button data-testid="breeds-btn" className={`h-1/6 hover:border-myBrown-light border-cream hover:bg-cream bg-myBrown-light border-2 transition-colors duration-300 rounded-md shadow-sm mb-2 text-cream hover:text-myBrown-dark`}>Select Breeds</Listbox.Button>
                                     <Transition
                                         as={Fragment}
                                         leave="transition ease-in duration-100"
@@ -151,7 +156,7 @@ export default function Filters({ location, showFilters, setShowFilters, breeds,
                                 </Listbox>
                             </div>
                             <div className={`w-full h-fit flex justify-center justify-self-end mb-2`}>
-                                <button className={`px-4 py-2 border rounded-md shadow-sm`} type="submit">Submit</button>
+                                <button disabled={loading} className={`hover:border-0 h-10 w-28 flex justify-center items-center rounded-md shadow-sm hover:bg-burnt hover:text-cream disabled:bg-slate-400 border text-burnt bg-cream border-burnt transition-colors duration-300`} type="submit">{loading ? <Loader /> : "Submit"}</button>
                             </div>
                         </form>
                     </Transition.Child>

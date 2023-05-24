@@ -28,8 +28,6 @@ export default function LoginForm({ saveData }: { saveData?: () => void }) {
                     alert("Something went wrong with our servers...")
                 }
                 setLoading(false);
-            }).catch((error) => {
-                alert(error)
             })
             })}
         >

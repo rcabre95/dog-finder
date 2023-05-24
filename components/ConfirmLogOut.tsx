@@ -22,7 +22,7 @@ export default function ConfirmLogOut({ showConf, setShowConf }: { showConf: boo
 
     return (
     <Transition appear show={showConf} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={continueBrowsing}>
+        <Dialog as="div" className="relative z-30" onClose={continueBrowsing}>
             <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -32,10 +32,10 @@ export default function ConfirmLogOut({ showConf, setShowConf }: { showConf: boo
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
             >
-                <div className="fixed inset-0 bg-black bg-opacity-25" />
+                <div className="fixed inset-0 bg-black bg-opacity-25 z-30" />
             </Transition.Child>
 
-            <div className="fixed inset-0 overflow-y-auto">
+            <div className="fixed inset-0 overflow-y-auto z-40">
                 <div className="flex min-h-full items-center justify-center p-4 text-center">
                     <Transition.Child
                     as={Fragment}
@@ -61,13 +61,13 @@ export default function ConfirmLogOut({ showConf, setShowConf }: { showConf: boo
 
                         <div className="mt-4">
                         <button type="button"
-                        className="inline-flex justify-center rounded-md border border-transparent bg-white px-4 py-2 text-sm font-medium text-blue-900 transition-colors duration-200 hover:bg-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 mr-4"
+                        className="inline-flex justify-center rounded-md border border-transparent bg-white px-4 py-2 text-sm font-medium text-myBrown-dark transition-colors duration-200 hover:bg-cream focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 mr-4"
                         onClick={logoutRedirect}>
                             Log out
                         </button>
                         <button
                             type="button"
-                            className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 transition-colors duration-200 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                            className="inline-flex justify-center rounded-md border border-transparent bg-myBrown-light px-4 py-2 text-sm font-medium text-myBrown-dark hover:text-myBrown-light transition-colors duration-200 hover:bg-cream focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                             onClick={continueBrowsing}
                         >
                             Continue matching

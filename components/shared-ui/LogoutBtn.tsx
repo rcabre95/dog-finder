@@ -23,7 +23,7 @@ export default function LogoutBtn({ needsConf=false, setShowConf }: { needsConf:
     }
 
     return (
-        <button className={`hover:border-0 rounded-md shadow-sm hover:bg-myBrown-dark hover:text-cream disabled:bg-slate-400 min-w-16 h-8 w-fit border text-myBrown-dark bg-cream transition-colors duration-300 px-2`} onClick={logoutConf}>
+        <button className={`hover:border-0 rounded-md shadow-sm hover:bg-myBrown-dark hover:text-cream disabled:bg-slate-400 h-8 w- flex flex-row items-center justify-center bg-white border text-myBrown-dark transition-colors duration-300 px-4 py-2`} onClick={logoutConf}>
             Log out
         </button>
     )
