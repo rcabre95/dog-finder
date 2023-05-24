@@ -192,6 +192,8 @@ export default function Dogs() {
         return {
             
         }
+        }).catch((error) => {
+            alert(error)
         });
     }, [])
 
