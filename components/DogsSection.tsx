@@ -5,9 +5,9 @@ import DogCard from "./shared-ui/DogCard"
 export default function DogsSection({ loadingDogs, dogs, favorites, handleFavorites }: { loadingDogs: boolean, dogs: Array<Dog>, favorites: Array<string>, handleFavorites: (id: string) => void }) {
 
     return (
-        <section className={`flex flex-wrap w-full justify-center md:w-4/6 ${loadingDogs ? "pt-4": null}`}>
+        <section className={`flex flex-wrap min-h-screen w-full justify-center md:w-4/6 ${loadingDogs ? "pt-4": null}`}>
             {loadingDogs ? 
-                <div className={`h-screen`}>
+                <div className={`h-full`}>
 
                     <Loader />
                 </div>
