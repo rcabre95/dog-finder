@@ -1,8 +1,32 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+## Running locally
 
-First, run the development server:
+First, clone the repo in whatever directory you want:
+
+```bash
+git clone git@github.com:rcabre95/dog-finder.git
+```
+
+Next, download the dependencies:
+
+```bash
+npm install
+```
+
+Then, set up your environment variables. Create a file in the root directory called `.env.local`. Inside of this file you need to create 4 variables:
+
+- Note: I am assuming you are running on port 3000. If this is not the case please replace 3000 with whatever port number you are using.
+
+```env
+NEXT_PUBLIC_FETCH_URL={Paste in the fetch api url and remove braces. Make sure there is no slash at the end.}
+NEXT_PUBLIC_DEBUG_LVL=LOW
+NEXT_PUBLIC_HOME_URL=http://localhost:3000
+OUTLOOK_EMAIL={Enter in the email i provided and remove braces}
+OUTLOOK_PASSWORD={Enter in the password i provided and remove braces}
+```
+
+Finally, run the development server:
 
 ```bash
 npm run dev
@@ -11,16 +35,6 @@ yarn dev
 # or
 pnpm dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
 ## Learn More
 
@@ -39,4 +53,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ### Geolocation
 
-Geolocation class was derived from [this article](http://janmatuschek.de/LatitudeLongitudeBoundingCoordinates#Latitude).
+Geolocation class found in `/lib/utils/distance.ts` was derived from [this article](http://janmatuschek.de/LatitudeLongitudeBoundingCoordinates#Latitude).
+
+### About the massive bundle size
+
+I know, I know. It's huge. But it's only huge because I wanted those silly dog gifs. It would be a reasonable size if I excluded them, but where's the fun in that? I will later update them into `.mov` or another file in the future to reduce its size.
