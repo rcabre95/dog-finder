@@ -25,6 +25,7 @@ export default function ServerError() {
     }, [timeLeft, router])
 
     return (
+        // small commit comment
         <div className={`h-screen w-screen flex flex-col items-center justify-center`}>
             <h4>500: Server Error</h4>
             <div  className={`h-52 w-72 relative rounded-md overflow-hidden`}>
