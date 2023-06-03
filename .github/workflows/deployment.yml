@@ -7,8 +7,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@main
-      - uses: actions/setup-node@main
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: "18.x"
       - name: Install NPM dependencies
@@ -16,6 +16,6 @@ jobs:
       - name: Run Jest Tests
         run: npm test
       - name: Cypress run
-        run: cypress-io/github-action@main
+        run: cypress-io/github-action@v5
       - name: Build
         run: npm run build
