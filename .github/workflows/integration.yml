@@ -3,7 +3,6 @@ name: CI
 on:
   pull_request:
     branches: [main]
-  workflow_dispatch:
 jobs:
   test_pull_request:
     runs-on: ubuntu-latest
