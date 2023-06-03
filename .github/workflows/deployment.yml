@@ -1,0 +1,21 @@
+# .github/workflows/main.yml
+name: CD
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - uses: actions/setup-node@main
+        with:
+          node-version: "18.x"
+      - name: Install NPM dependencies
+        run: npm ci
+      - name: Run Jest Tests
+        run: npm test
+      - name: Cypress run
+        run: cypress-io/github-action@v5
+      - name: Build
+        run: npm run build
