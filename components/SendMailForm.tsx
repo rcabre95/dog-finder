@@ -5,6 +5,7 @@ import { useState } from "react";
 import Loader from "@/components/shared-ui/Loader";
 import { Dog } from "@/lib/fetch_sdk";
 
+// need to make reusable and replace loginform or vice-versa
 export default function SendMailForm({ dog, saveData }: { dog: Dog, saveData?: (data: any) => void }) {
     const [loading, setLoading] = useState<boolean>(false);
 

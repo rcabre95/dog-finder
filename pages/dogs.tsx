@@ -215,6 +215,7 @@ export default function Dogs() {
     }, [location, ageRange, breeds, distance]);
 
     useEffect(() => {
+        // watches favorites
         if (favorites.length === 10) {
             SDK.dogMatch(favorites).then((d: string) => {
                 router.push({
@@ -226,7 +227,7 @@ export default function Dogs() {
     }, [favorites, router]);
 
     return (
-
+        // if user is not logged in, load YouMustBeLoggedIn. if not, load page as usual
         isLoggedIn ? (
         <div className={`w-screen h-fit relative flex flex-col bg-white`}>
             <MetaTags
@@ -243,6 +244,7 @@ export default function Dogs() {
                 setShowConf={setShowConf}
             />
             <ConfirmLogOut showConf={showConf} setShowConf={setShowConf} />
+            {/* if breeds are not loaded yet remove possibility of Filters being loaded */}
             {breeds.length > 0 ? 
                     <Filters
                         breeds={breeds}

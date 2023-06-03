@@ -5,13 +5,13 @@ export default function ResultsBanner({ total, favorites, sortDirection, reSort 
     return (
         <section className="flex flex-col h-fit justify-center items-center mb-4 md:mb-2">
             <div className={`w-full mb-2`}>
-            {total! > -1 ? <h5 className={`text-2xl font-bold text-myBrown-dark`}>Search yielded <span className={`text-burnt`}>{total}</span> results</h5>: null}
+            {total! > -1 ? <h5 className={`text-2xl font-bold text-myBrown-dark`}>Search yielded <span className={`text-burnt`}>{total}</span><span>{total === 1 ? " result" : " results"}</span></h5>: null}
             <p className={`text-sm text-myBrown-light`}>
                 You have 
                 <span className={`text-red-500 ml-1 mr-1`}>
                     {10 - favorites.length} 
                 </span>
-                hearts left before being matched
+                <span>{10 - favorites.length === 1 ? "heart" : "hearts" }</span> left before being matched
             </p>
             </div>
             {sortDirection ?

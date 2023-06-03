@@ -6,6 +6,7 @@ import SendMailForm from './SendMailForm';
 import { Dog } from '@/lib/fetch_sdk';
 
 export default function MatchMain({ dog }: { dog: Dog }) {
+    // proper grammar
     const anAges: Array<number> = [8, 11, 18]
     
     return (
