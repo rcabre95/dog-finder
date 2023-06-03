@@ -16,6 +16,6 @@ jobs:
       - name: Run Jest Tests
         run: npm test
       - name: Cypress run
-        run: cypress-io/github-action@v5
+        run: cypress-io/github-action@main
       - name: Build
         run: npm run build
